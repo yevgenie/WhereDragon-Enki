@@ -1,0 +1,30 @@
+{
+  "name": "enki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape dist/tests/**/tiamat.test.js",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "node dist/index.js",
+    "start:dev": "nodemon dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.16.2",
+    "dotenv": "^16.4.5",
+    "googleapis": "^144.0.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "@types/tape": "^5.6.4",
+    "csv-parser": "^3.0.0",
+    "nodemon": "^3.1.4",
+    "tape": "^5.9.0",
+    "typescript": "^5.6.2"
+  }
+}
