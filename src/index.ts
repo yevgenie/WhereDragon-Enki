@@ -12,18 +12,7 @@ import { writeFile } from "fs";
 import { writeToDKPEntrySheetBasic } from "./sheets";
 import { channelMessagesToWindows } from "./helpers/channelToDKP";
 
-import fs from "fs";
-import path from "path";
 dotenv.config();
-
-function isToday(date: Date): boolean {
-  const today = new Date();
-  return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
-  );
-}
 
 const client = new Client({
   intents: [
@@ -47,98 +36,8 @@ client.once("ready", () => {
   console.log("Bot is online!");
 });
 
-const THREE_HOURS_MS = 3 * 60 * 60 * 1000;
-function isOlderThanThreeHours(message: Message) {
-  return Date.now() - message.createdTimestamp > THREE_HOURS_MS;
-}
-
-function isImageOnlyMessage(message: Message): boolean {
-  // Check for attachments and ensure message content is empty or just whitespace
-  return message.attachments.size > 0 && message.content.trim() === "";
-}
-
-async function fetchData(fileUrl: string) {
-  const { default: fetch } = await import("node-fetch");
-  // Now you can use fetch
-  const response = await fetch(fileUrl);
-  return response.json();
-}
-
-async function downloadAttachment(
-  attachment: Attachment,
-  folderPath: string
-): Promise<void> {
-  const fileUrl = attachment.url;
-  const fileName = `${Date.now()}_${attachment.name || "image"}`;
-
-  const response: any = await fetchData(fileUrl);
-  const fileStream = fs.createWriteStream(path.join(folderPath, fileName));
-
-  return new Promise((resolve, reject) => {
-    response.body?.pipe(fileStream);
-    response.body?.on("error", reject);
-    fileStream.on("finish", resolve);
-    fileStream.on("error", reject);
-  });
-}
-
-client.on("messageCreate", async (message) => {
+client.on("messageCreate", async (message: any) => {
   if (message.author.bot) return; // Ignore bot messages
-
-  if (message.content.indexOf("!are you here?") === 0) {
-    message.channel.send("Yes");
-  }
-  let attachmentCount = 0;
-  if (message.content.indexOf("!meme dl") === 0) {
-    try {
-      const channel = message.channel as TextChannel;
-      let lastMessageId;
-
-      while (true) {
-        const fetchedMessages: Collection<string, Message> =
-          await channel.messages.fetch({
-            limit: 100,
-            before: lastMessageId,
-          });
-
-        console.log("Fetched 100...");
-
-        for (const message of fetchedMessages.values()) {
-          if (isImageOnlyMessage(message)) {
-            attachmentCount++;
-            for (const [, attachment] of message.attachments) {
-              if (
-                attachment.contentType &&
-                attachment.contentType.startsWith("image/")
-              ) {
-                try {
-                  await downloadAttachment(attachment, "../../downloads");
-                  console.log(`Downloaded: ${attachment.name}`);
-                } catch (error) {
-                  console.error(
-                    `Failed to download ${attachment.name}:`,
-                    error
-                  );
-                }
-              }
-            }
-          }
-          if (isOlderThanThreeHours(message)) {
-            console.log("Stopping fetch: Message is older than 3 hours");
-            return; // Exit the function when we hit a message older than 3 hours
-          }
-          if (fetchedMessages.size === 0) break;
-          lastMessageId = fetchedMessages.last()?.id;
-        }
-      }
-    } catch (error) {
-      message.channel.send("Error fetching memes.");
-    }
-    console.log(`Found ${attachmentCount} memes from the last 3 hours.`);
-    // message.channel.send(
-    //   `Found ${attachmentCount} memes from the last 3 hours.`
-    // );
-  }
 
   if (message.content.indexOf("!process") === 0) {
     const isClaimed = message.content.includes("claimed");
