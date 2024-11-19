@@ -1,5 +1,6 @@
 import {
   Attachment,
+  Channel,
   Client,
   Collection,
   GatewayIntentBits,
@@ -36,7 +37,25 @@ client.once("ready", () => {
   console.log("Bot is online!");
 });
 
+let lastPopChannel: any | null = null;
+
 client.on("messageCreate", async (message: any) => {
+  if (
+    (message.author.bot && message.content.includes("DKP Review")) ||
+    message.content.indexOf("!next") === 0
+  ) {
+    if (lastPopChannel) {
+      const channelId = message.channel.id;
+      const guildId = message.guild?.id;
+      const messageId = message.id;
+      const messageLink = `https://discord.com/channels/${guildId}/${channelId}/${messageId}`;
+
+      lastPopChannel.send(`Here's the link to the next POP: ${messageLink}`);
+    }
+
+    lastPopChannel = message.channel;
+  }
+
   if (message.author.bot) return; // Ignore bot messages
 
   if (message.content.indexOf("!process") === 0) {
