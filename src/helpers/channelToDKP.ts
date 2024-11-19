@@ -125,11 +125,57 @@ export const channelMessagesToWindows = (
       });
       console.log(windowsPerMember);
       return windowsPerMember;
+    case "beh":
+    case "faf":
+    case "ada":
+      const isKingsChannel = true;
+      const windows = splitMessagesIntoWindows(
+        channel.messages,
+        isKingsChannel
+      );
+
+      // channel.messages.forEach((message) => {
+      //   const memberName =
+      //     message.memberDisplayName ??
+      //     message.author.globalName ??
+      //     message.author.username;
+      //   const alreadyChecked = !!windowsPerMember[memberName];
+      //   if (!alreadyChecked) {
+      //     if (message.content.toLocaleLowerCase().trim() === "x") {
+      //       windowsPerMember[memberName] = {
+      //         windows: 1,
+      //         message: message.content.trim(),
+      //         checkForError: false,
+      //         timestamp: formatTimestampToDate(message.createdTimestamp),
+      //       };
+      //     } else if (
+      //       message.content.includes("x") &&
+      //       message.content.includes("forgot")
+      //     ) {
+      //       windowsPerMember[memberName] = {
+      //         windows: 1,
+      //         message: message.content.trim(),
+      //         checkForError: true,
+      //         timestamp: formatTimestampToDate(message.createdTimestamp),
+      //       };
+      //     }
+      //   }
+      //   if (alreadyChecked) {
+      //     if (
+      //       message.content.includes("x") &&
+      //       message.content.includes("out")
+      //     ) {
+      //       windowsPerMember[memberName].xOutWindow = 1; // todo: Window Index
+      //     }
+      //   }
+      // });
+      return windowsPerMember;
     default:
       return windowsPerMember;
   }
 };
 
+// Note: No longer used since not generating sheets but instead doing google api entry direct into existing sheets. Leaving for reference.
 const buildHeaderRowsToDelimitedCSV = (
   channelName: string,
   windowPoints: number = 0,
@@ -274,12 +320,16 @@ const splitWindowsIntoValidInvalid = (
 };
 
 const splitMessagesIntoWindows = (
-  messages: Array<{ content: string }>
+  messages: Array<{ content: string }>,
+  isKingsChannel: boolean = false
 ): Array<Array<{ content: string }>> => {
   // Use reduce to build up our result array
   return messages.reduce(
     (acc: Array<Array<{ content: string }>>, msg: { content: string }) => {
-      if (msg.content.includes("in 5-Minutes x-in")) {
+      if (
+        msg.content.includes("in 5-Minutes x-in") ||
+        (isKingsChannel && msg.content.includes("-- Window "))
+      ) {
         acc.push([msg]);
       } else {
         if (acc.length === 0) {

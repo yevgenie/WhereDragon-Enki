@@ -61,6 +61,7 @@ export type ParsedWindowsPerMember = {
   [memberName: string]: {
     windows: number;
     message: string;
+    xOutWindow?: number;
     xKill?: boolean;
     xClaim?: boolean;
     checkForError: boolean;
