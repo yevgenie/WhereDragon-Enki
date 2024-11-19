@@ -19,6 +19,31 @@ export const channelPlayerRows = (channel: { name: string }) => {
   });
 };
 
+export const extractWindowInfo = (input: string): { windowNumber: number; claimLSName: string } => {
+  const pattern = /----------------- POP: Window (\d+) \| (.+) -----------------/;
+  const match = input.match(pattern);
+
+  if (match) {
+      return {
+          windowNumber: parseInt(match[1], 10),
+          claimLSName: match[2].trim()
+      };
+  } else {
+      throw new Error("The string does not match the expected format.");
+  }
+}
+
+const extractNumberAfterX = (s: string): number | null  => {
+    const regex = /^x\s*(\d+)$/;
+    const match = s.match(regex);
+
+    if (match) {
+        return parseInt(match[1], 10);
+    } else {
+        return null;
+    }
+}
+
 export const channelMessagesToWindows = (
   channel: TextChannel & { messages: any[] }
 ): ParsedWindowsPerMember => {
@@ -123,7 +148,6 @@ export const channelMessagesToWindows = (
           }
         });
       });
-      console.log(windowsPerMember);
       return windowsPerMember;
     case "beh":
     case "faf":
@@ -134,41 +158,53 @@ export const channelMessagesToWindows = (
         isKingsChannel
       );
 
-      // channel.messages.forEach((message) => {
-      //   const memberName =
-      //     message.memberDisplayName ??
-      //     message.author.globalName ??
-      //     message.author.username;
-      //   const alreadyChecked = !!windowsPerMember[memberName];
-      //   if (!alreadyChecked) {
-      //     if (message.content.toLocaleLowerCase().trim() === "x") {
-      //       windowsPerMember[memberName] = {
-      //         windows: 1,
-      //         message: message.content.trim(),
-      //         checkForError: false,
-      //         timestamp: formatTimestampToDate(message.createdTimestamp),
-      //       };
-      //     } else if (
-      //       message.content.includes("x") &&
-      //       message.content.includes("forgot")
-      //     ) {
-      //       windowsPerMember[memberName] = {
-      //         windows: 1,
-      //         message: message.content.trim(),
-      //         checkForError: true,
-      //         timestamp: formatTimestampToDate(message.createdTimestamp),
-      //       };
-      //     }
-      //   }
-      //   if (alreadyChecked) {
-      //     if (
-      //       message.content.includes("x") &&
-      //       message.content.includes("out")
-      //     ) {
-      //       windowsPerMember[memberName].xOutWindow = 1; // todo: Window Index
-      //     }
-      //   }
-      // });
+      const { windowNumber: totalWindows, claimLSName } = extractWindowInfo(channel.messages.find((msg) => msg.content.includes("POP: Window")).content);
+     
+      windows.forEach((window, windowIndex) => {
+        window.forEach((message: any, windowIndex: number) => {
+          const memberName =
+            message.memberDisplayName ??
+            message.author.globalName ??
+            message.author.username;
+          if (memberName === "Alise") return;
+
+          // if someone x-job's on last window, give them xClaim and xKill by default
+          // note this will have to be a claimed processed camp at time of command to count for claim/kill points
+          const isXOut = message.content.includes("x") && message.content.includes("out");
+          const firstWindowXIn = message.content.trim() === "x";
+          const windowNumberForXIn = extractNumberAfterX(message.content.trim());
+          
+          // eg "x" or "x1"
+          if (firstWindowXIn || windowNumberForXIn === 1) {
+              windowsPerMember[memberName] = {
+                windows: totalWindows,
+                message: message.content.trim(),
+                checkForError: false,
+                timestamp: formatTimestampToDate(message.createdTimestamp),
+              };
+          } 
+          
+          // eg "x-out" "xout" "x out"
+          if (isXOut) {
+            // TODO: Heavy testing here on x-outs. Sigh.
+            windowsPerMember[memberName].xOutWindow = windowIndex;
+            windowsPerMember[memberName].windows -= (windowIndex + 1);
+            windowsPerMember[memberName].timestamp = formatTimestampToDate(message.createdTimestamp);
+            windowsPerMember[memberName].message = `${windowsPerMember[memberName].message} | ${message.content.trim()}`
+          }
+
+          // eg "x2" "x 3"
+          if (!isXOut && !firstWindowXIn && windowNumberForXIn && windowNumberForXIn > 1) {
+            windowsPerMember[memberName] = {
+              windows: totalWindows,
+              message: message.content.trim(),
+              checkForError: false,
+              timestamp: formatTimestampToDate(message.createdTimestamp),
+            };
+          }
+        });
+      });
+      console.log({ windowsPerMember })
       return windowsPerMember;
     default:
       return windowsPerMember;
