@@ -67,8 +67,7 @@ export const channelMessagesToWindows = (
           message.author.globalName ??
           message.author.username;
         const messageContent = message.content.trim().toLocaleLowerCase();
-        const alreadyChecked = !!windowsPerMember[memberName];
-        if (!alreadyChecked) {
+        if (!windowsPerMember[memberName]) {
           // eg "x"
           if (messageContent === "x") {
             windowsPerMember[memberName] = {
@@ -96,7 +95,7 @@ export const channelMessagesToWindows = (
         }
 
         // eg. "x-out"
-        if (alreadyChecked) {
+        if (windowsPerMember[memberName]) {
           if (messageContent.includes("x") && messageContent.includes("out")) {
             windowsPerMember[memberName] = {
               windows: 0,
@@ -244,7 +243,6 @@ export const channelMessagesToWindows = (
           // eg "x-kill" "xkill" "x kill"
           const validXKill = validXKillPattern.test(messageContent);
           if (validXKill) {
-            console.log("HERE", memberName);
             windowsPerMember[memberName] = {
               windows: 0,
               message: messageContent,
@@ -257,6 +255,49 @@ export const channelMessagesToWindows = (
         });
       });
       // console.log({ windowsPerMember });
+      return windowsPerMember;
+    case "kv":
+      channel.messages.forEach((message) => {
+        const memberName =
+          message.memberDisplayName ??
+          message.author.globalName ??
+          message.author.username;
+        const messageContent = message.content.trim().toLocaleLowerCase();
+        // eg "x"  "x forgot" "x-forgot"
+        if (
+          messageContent === "x" ||
+          (messageContent.includes("x") && messageContent.includes("forgot"))
+        ) {
+          windowsPerMember[memberName] = {
+            windows: 1,
+            message: messageContent,
+            xClaim: true,
+            xKill: false,
+            checkForError: false,
+            timestamp: formatTimestampToDate(message.createdTimestamp),
+          };
+        }
+
+        // eg "x-kill" "xkill" "x kill"
+        const validXKill = validXKillPattern.test(messageContent);
+        if (validXKill) {
+          if (windowsPerMember[memberName]) {
+            // must have had an "x" prior to the "x-kill"
+            windowsPerMember[memberName].xKill = true;
+          } else {
+            // x-kill without camping / claim credit
+            windowsPerMember[memberName] = {
+              windows: 0,
+              message: messageContent,
+              xKill: true,
+              xClaim: false,
+              checkForError: false,
+              timestamp: formatTimestampToDate(message.createdTimestamp),
+            };
+          }
+        }
+      });
+
       return windowsPerMember;
     default:
       return windowsPerMember;
