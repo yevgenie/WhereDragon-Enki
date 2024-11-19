@@ -85,7 +85,7 @@ export const channelMessagesToWindows = (
       // });
 
       const validJobXinPattern = /x.*?[a-z]{3}/i;
-      const validXKillPattern = /x-kill(?:.*[a-z]{3})/i;
+      const validXKillPattern = /x.*kill.*[a-z]{3}/i;
       validWindows.forEach((window, windowIndex) => {
         window.forEach((message: any) => {
           const memberName =
@@ -109,7 +109,8 @@ export const channelMessagesToWindows = (
                 timestamp: formatTimestampToDate(message.createdTimestamp),
               };
             } else {
-              windowsPerMember[memberName].windows += isLastWindow && validXKill ? 0 : 1;
+              windowsPerMember[memberName].windows +=
+                isLastWindow && validXKill ? 0 : 1;
               windowsPerMember[memberName].xClaim = isLastWindow && !validXKill;
               windowsPerMember[memberName].xKill = isLastWindow;
               windowsPerMember[memberName].message = `${

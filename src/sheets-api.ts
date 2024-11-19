@@ -112,11 +112,27 @@ export const generateDKPEntryMemberRowEntries = (
       });
       requests.push({
         range: `${SHEET_NAME}!E${index + 5}`,
-        values: [[isClaimed && windowsPerMember[name].xKill && windowsPerMember[name].xClaim ? "TRUE" : "FALSE"]],
+        values: [
+          [
+            isClaimed &&
+            windowsPerMember[name].xKill &&
+            windowsPerMember[name].xClaim
+              ? "TRUE"
+              : "FALSE",
+          ],
+        ],
       });
       requests.push({
         range: `${SHEET_NAME}!F${index + 5}`,
-        values: [[isClaimed && windowsPerMember[name].xKill ? "TRUE" : "FALSE"]],
+        values: [
+          [
+            isClaimed &&
+            windowsPerMember[name].xKill &&
+            !windowsPerMember[name].xClaim
+              ? "TRUE"
+              : "FALSE",
+          ],
+        ],
       });
     });
 
