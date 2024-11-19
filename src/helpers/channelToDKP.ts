@@ -168,8 +168,6 @@ export const channelMessagesToWindows = (
             message.author.username;
           if (memberName === "Alise") return;
 
-          // if someone x-job's on last window, give them xClaim and xKill by default
-          // note this will have to be a claimed processed camp at time of command to count for claim/kill points
           const isXOut = message.content.includes("x") && message.content.includes("out");
           const firstWindowXIn = message.content.trim() === "x";
           const windowNumberForXIn = extractNumberAfterX(message.content.trim());
@@ -337,7 +335,6 @@ const buildHeaderRowsToDelimitedCSV = (
 
   return [row1, row2, row3, row4].join("\n");
 };
-
 const splitWindowsIntoValidInvalid = (
   channel: TextChannel & { messages: any[] }
 ) => {
