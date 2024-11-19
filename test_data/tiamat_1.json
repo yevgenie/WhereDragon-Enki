@@ -49389,14 +49389,14 @@
       "createdTimestamp": 1731952552011,
       "type": 0,
       "system": false,
-      "content": "!process",
+      "content": "x-kill rdm",
       "author": {
         "id": "381896490232053762",
         "bot": false,
         "system": false,
         "flags": 0,
         "username": "yev3264",
-        "globalName": "Syragon",
+        "globalName": "XKillTest",
         "discriminator": "0",
         "avatar": "c6e27c76347ddcd851cf61bc939d3fe3",
         "banner": null,
@@ -49484,7 +49484,7 @@
       "interaction": null,
       "poll": null,
       "call": null,
-      "memberDisplayName": "Syragon"
+      "memberDisplayName": "XKillTest"
     },
     {
       "channelId": "1300644226526351435",

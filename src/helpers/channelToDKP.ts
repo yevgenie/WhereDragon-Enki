@@ -85,23 +85,33 @@ export const channelMessagesToWindows = (
       // });
 
       const validJobXinPattern = /x.*?[a-z]{3}/i;
-      validWindows.forEach((window) => {
+      const validXKillPattern = /x-kill(?:.*[a-z]{3})/i;
+      validWindows.forEach((window, windowIndex) => {
         window.forEach((message: any) => {
           const memberName =
             message.memberDisplayName ??
             message.author.globalName ??
             message.author.username;
           if (memberName === "Alise") return;
+
+          // if someone x-job's on last window, give them xClaim and xKill by default
+          // note this will have to be a claimed processed camp at time of command to count for claim/kill points
+          const isLastWindow = windowIndex + 1 === validWindows.length;
           if (validJobXinPattern.test(message.content)) {
+            const validXKill = validXKillPattern.test(message.content);
             if (!windowsPerMember[memberName]) {
               windowsPerMember[memberName] = {
-                windows: 1,
+                windows: isLastWindow && validXKill ? 0 : 1,
                 message: message.content.trim(),
                 checkForError: false,
+                xClaim: isLastWindow && !validXKill,
+                xKill: isLastWindow,
                 timestamp: formatTimestampToDate(message.createdTimestamp),
               };
             } else {
-              windowsPerMember[memberName].windows += 1;
+              windowsPerMember[memberName].windows += isLastWindow && validXKill ? 0 : 1;
+              windowsPerMember[memberName].xClaim = isLastWindow && !validXKill;
+              windowsPerMember[memberName].xKill = isLastWindow;
               windowsPerMember[memberName].message = `${
                 windowsPerMember[memberName].message
               } | ${message.content.trim()}`;
