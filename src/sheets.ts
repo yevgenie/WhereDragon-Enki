@@ -34,6 +34,7 @@ export async function writeToDKPEntrySheetBasic(
 
     // 218 rows put in the value FALSE for the claim column as the clear operation:
     await WDSheetsAPI.clearRangeWithDefaultValue("E5:E223", 218, 1, "FALSE");
+    await WDSheetsAPI.clearRangeWithDefaultValue("F5:F223", 218, 1, "FALSE");
 
     const requests = [
       ...generateDKPEntryHeaderEntries(channelName, hnmSheetValue, !!isClaimed),

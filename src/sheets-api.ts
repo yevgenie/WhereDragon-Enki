@@ -110,6 +110,8 @@ export const generateDKPEntryMemberRowEntries = (
         range: `${SHEET_NAME}!D${index + 5}`,
         values: [[`${windowsPerMember[name].windows}`]],
       });
+
+      // C+K Column
       requests.push({
         range: `${SHEET_NAME}!E${index + 5}`,
         values: [
@@ -122,6 +124,8 @@ export const generateDKPEntryMemberRowEntries = (
           ],
         ],
       });
+
+      // KO Column
       requests.push({
         range: `${SHEET_NAME}!F${index + 5}`,
         values: [
