@@ -77,7 +77,7 @@ export const generateDKPEntryHeaderEntries = (
   return [
     {
       range: `${SHEET_NAME}!A1:A1`, // channel name
-      values: [[channelName]],
+      values: [[`#${channelName}`]],
     },
     {
       range: `${SHEET_NAME}!E1:I2`, //
