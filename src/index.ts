@@ -58,7 +58,10 @@ client.on("messageCreate", async (message: any) => {
 
   if (message.author.bot) return; // Ignore bot messages
 
-  if (message.content.indexOf("!process") === 0) {
+  if (
+    message.content.indexOf("!process") === 0 ||
+    message.content.indexOf("!save") === 0
+  ) {
     const isClaimed = message.content.includes("claimed");
     const popWindow = message.content.includes("pop")
       ? getPopWindowFromProcessCommand(message.content)
@@ -87,8 +90,6 @@ client.on("messageCreate", async (message: any) => {
         lastMessageId = fetchedMessages.last()?.id; // Update the lastMessageId to the last fetched message
       }
 
-      // await writeToJSONFile({ ...channel, messages: allMessages });
-
       const allMessagesData: any[] = [];
       await allMessages.reverse().forEach(async (msg) => {
         const { createdTimestamp, author, content, member } = msg;
@@ -104,11 +105,6 @@ client.on("messageCreate", async (message: any) => {
         });
       });
 
-      // await writeToJSONFile({
-      //   ...message.channel,
-      //   messages: allMessagesData,
-      // });
-
       const windowsPerMember = channelMessagesToWindows(
         {
           ...message.channel,
@@ -117,21 +113,30 @@ client.on("messageCreate", async (message: any) => {
         popWindow
       );
 
-      // await writeToJSONFile(parsed);
-
-      if (
-        message.channel instanceof TextChannel ||
-        message.channel instanceof NewsChannel
-      ) {
-        await writeToDKPEntrySheetBasic(
-          message.channel.name,
-          windowsPerMember,
-          isClaimed
+      if (message.content.indexOf("!save") === 0) {
+        await writeToJSONFile(
+          {
+            ...message.channel,
+            messages: allMessagesData,
+          },
+          channel.name + ".json"
         );
+        message.channel.send("Saved.");
       } else {
-        message.channel.send(
-          "This command cannot be executed in this type of channel."
-        );
+        if (
+          message.channel instanceof TextChannel ||
+          message.channel instanceof NewsChannel
+        ) {
+          await writeToDKPEntrySheetBasic(
+            message.channel.name,
+            windowsPerMember,
+            isClaimed
+          );
+        } else {
+          message.channel.send(
+            "This command cannot be executed in this type of channel."
+          );
+        }
       }
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -143,22 +148,10 @@ client.on("messageCreate", async (message: any) => {
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 client.login(TOKEN);
 
-// Channel Name
-// HNM Target
-// DKP Process Date (now?)
-// Window Points (depends on Target)
-
-// Player Names
-// Claim+Kill | Kill | Window Points
-
-// Specify the file path
-const filePath = "./test_output.json";
-
-// Convert the object to a JSON string
-
-// const jsonString = JSON.stringify(myObject, null, 2); // Pretty print with 2 spaces
-
-const writeToJSONFile = (object: any) => {
+export const writeToJSONFile = (
+  object: any,
+  filePath = "./test_output.json"
+) => {
   writeFile(filePath, JSON.stringify(object, null, 2), (err) => {
     if (err) {
       console.error("Error writing to file:", err);
