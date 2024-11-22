@@ -56,7 +56,7 @@ export const WDSheetsAPI = {
       values: string[][];
     }[]
   ) => {
-    console.log("BATCH UPDATE!", SPREADSHEET_ID, requests.length);
+    console.log("BATCH UPDATE!", JSON.stringify(requests, null, 2));
     const response = await sheets.spreadsheets.values.batchUpdate({
       spreadsheetId: SPREADSHEET_ID,
       requestBody: {
@@ -99,6 +99,7 @@ export const generateDKPEntryMemberRowEntries = (
   isClaimed: boolean
 ) => {
   const requests: { range: string; values: string[][] }[] = [];
+  console.log({ windowsPerMember });
   Object.keys(windowsPerMember)
     .sort(alphaSort)
     .forEach((name, index) => {

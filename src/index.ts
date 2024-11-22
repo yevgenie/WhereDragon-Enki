@@ -60,6 +60,10 @@ client.on("messageCreate", async (message: any) => {
 
   if (message.content.indexOf("!process") === 0) {
     const isClaimed = message.content.includes("claimed");
+    const popWindow = message.content.includes("pop")
+      ? getPopWindowFromProcessCommand(message.content)
+      : undefined;
+
     try {
       // Get the channel where the command was sent
       const channel = message.channel as TextChannel;
@@ -105,10 +109,13 @@ client.on("messageCreate", async (message: any) => {
       //   messages: allMessagesData,
       // });
 
-      const windowsPerMember = channelMessagesToWindows({
-        ...message.channel,
-        messages: allMessagesData,
-      } as TextChannel & { messages: Message[] });
+      const windowsPerMember = channelMessagesToWindows(
+        {
+          ...message.channel,
+          messages: allMessagesData,
+        } as TextChannel & { messages: Message[] },
+        popWindow
+      );
 
       // await writeToJSONFile(parsed);
 
@@ -160,3 +167,14 @@ const writeToJSONFile = (object: any) => {
     }
   });
 };
+
+function getPopWindowFromProcessCommand(str: string) {
+  const regex = /pop:(\d+)/;
+  const match = str.match(regex);
+
+  if (match && match[1]) {
+    return parseInt(match[1], 10);
+  } else {
+    return undefined;
+  }
+}

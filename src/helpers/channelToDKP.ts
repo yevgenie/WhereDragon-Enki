@@ -35,8 +35,8 @@ export const extractWindowInfo = (
   }
 };
 
-const extractNumberAfterX = (s: string): number | null => {
-  const regex = /^x\s*(\d+)$/;
+export const extractNumberAfterX = (s: string): number | null => {
+  const regex = /^x-?\s*(\d+)$/;
   const match = s.match(regex);
 
   if (match) {
@@ -47,19 +47,20 @@ const extractNumberAfterX = (s: string): number | null => {
 };
 
 export const channelMessagesToWindows = (
-  channel: TextChannel & { messages: any[] }
+  channel: TextChannel & { messages: any[] },
+  popWindow?: number
 ): ParsedWindowsPerMember => {
-  const channelHNMTypeKey: HNMTypeChannelKeys | null =
-    extractMHNMPartOfChannelName(channel.name as string);
+  const channelHNMTypeKey = extractMHNMPartOfChannelName(
+    channel.name as string
+  )?.replace(/\d/g, "") as HNMTypeChannelKeys | null;
   const windowsPerMember: ParsedWindowsPerMember = {};
 
   const validJobXinPattern =
-    /x.*?(\brdm\b|\bblm\b|\bwhm\b|\bsmn\b|\bbrd\b|\bpld\b|\bnin\b|\bdrk\b|\bthf\b|\bbst\b|\bdrg\b|\bsam\b|\brng\b|\bwar\b|\bmnk\b|\bcor\b|\bblu\b|\bsch\b)/i;
+    /^x.*?(scout|tod|blm|rdm|whm|rng|sam|nin|mnk|war|bst|drk|pld|brd|smn|drg|thf)\b/i;
   const validXKillPatternTiamat =
     /x.*?(kill.*?(?:\b[a-z]{3}\b)|(?:\b[a-z]{3}\b).*?kill)/i;
   const validXKillPattern = /x.*kill/i;
   const validAltXinPattern = /^x\s(?!(out|scout)\b)\w+/i;
-
   switch (channelHNMTypeKey) {
     case "sim":
     case "shi":
@@ -71,11 +72,14 @@ export const channelMessagesToWindows = (
           message.author.username;
         const messageContent = message.content.trim().toLocaleLowerCase();
         if (!windowsPerMember[memberName]) {
+          const windowNumberForXIn = extractNumberAfterX(messageContent);
           // eg "x"
           // todo: add admin :greencheck: check for scouts
           if (
             messageContent === "x" ||
-            (messageContent.includes("x") && messageContent.includes("scout"))
+            (messageContent.includes("x") &&
+              messageContent.includes("scout")) ||
+            (windowNumberForXIn !== null && windowNumberForXIn > 0)
           ) {
             windowsPerMember[memberName] = {
               windows: 1,
@@ -242,7 +246,9 @@ export const channelMessagesToWindows = (
         msg.content.includes("POP: Window")
       );
 
-      const { windowNumber: totalWindows, claimLSName } = popWindowMessage
+      const { windowNumber: totalWindows, claimLSName } = popWindow
+        ? { windowNumber: popWindow, claimLSName: "NA" }
+        : popWindowMessage
         ? extractWindowInfo(popWindowMessage.content)
         : { windowNumber: 7, claimLSName: "Unknown" };
 
@@ -308,7 +314,7 @@ export const channelMessagesToWindows = (
             windowsPerMember[memberName].xOutWindow = windowIndex;
             windowsPerMember[memberName].xClaim = false; // X-out will always force x-claim to false
             windowsPerMember[memberName].xKill = false; // X-out will always force x-kill to false
-            windowsPerMember[memberName].windows -= windowIndex + 1;
+            windowsPerMember[memberName].windows -= windowIndex + 1 + 1; // index is 0 based, so +1 to adjust to window number. X-out happens after the last window process so +1 to adjust for that.
             windowsPerMember[memberName].timestamp = formatTimestampToDate(
               message.createdTimestamp
             );

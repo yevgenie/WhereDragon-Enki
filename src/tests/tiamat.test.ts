@@ -2,6 +2,7 @@ import test from "tape";
 import {
   channelHeaderRows,
   channelMessagesToWindows,
+  extractNumberAfterX,
 } from "../helpers/channelToDKP";
 import { compareCsvFiles, exportToCsv, loadJsonFile } from "../helpers/utils";
 import { TextChannel, Message } from "discord.js";
@@ -11,7 +12,7 @@ test("Tiamat Channel To DKP", async (t) => {
     "test_data/tiamat_6.json"
   ) as TextChannel & { messages: Message[] };
   const parsedWindowsPerMember = channelMessagesToWindows(mockTiamatChannel);
-  console.log({ parsedWindowsPerMember });
+  // console.log({ parsedWindowsPerMember });
   t.deepEqual(parsedWindowsPerMember, {
     Dogs: {
       windows: 9,
@@ -374,6 +375,14 @@ test("Tiamat Channel To DKP", async (t) => {
       xKill: true,
       timestamp: "2024-11-06 23:05:31",
     },
+    Riverking: {
+      windows: 3,
+      message: "x-behescout | x-drk | x-drk",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-06 23:06:58",
+    },
     Suds: {
       windows: 3,
       message: "x-smn | x-smn | x-smn",
@@ -389,14 +398,6 @@ test("Tiamat Channel To DKP", async (t) => {
       xClaim: true,
       xKill: true,
       timestamp: "2024-11-06 23:08:10",
-    },
-    Riverking: {
-      windows: 2,
-      message: "x-drk | x-drk",
-      checkForError: false,
-      xClaim: true,
-      xKill: true,
-      timestamp: "2024-11-06 23:06:58",
     },
     Chronus: {
       windows: 2,
@@ -489,4 +490,14 @@ test("Tiamat Channel To DKP", async (t) => {
   });
 
   t.end();
+});
+
+test("extractNumberAfterX function", (t) => {
+  t.plan(5);
+
+  t.equal(extractNumberAfterX("x1"), 1, 'Should return 1 for "x1"');
+  t.equal(extractNumberAfterX("x-1"), 1, 'Should return 1 for "x-1"');
+  t.equal(extractNumberAfterX("x 1"), 1, 'Should return 1 for "x 1"');
+  t.equal(extractNumberAfterX("x2"), 2, 'Should return 2 for "x2"');
+  t.equal(extractNumberAfterX("x"), null, 'Should return null for "x"');
 });
