@@ -56,7 +56,6 @@ export const WDSheetsAPI = {
       values: string[][];
     }[]
   ) => {
-    console.log("BATCH UPDATE!", JSON.stringify(requests, null, 2));
     const response = await sheets.spreadsheets.values.batchUpdate({
       spreadsheetId: SPREADSHEET_ID,
       requestBody: {

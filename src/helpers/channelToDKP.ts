@@ -46,6 +46,13 @@ export const extractNumberAfterX = (s: string): number | null => {
   }
 };
 
+export const validJobXinPattern =
+  /^x.*?(scout|tod|blm|rdm|whm|rng|sam|nin|mnk|war|bst|drk|pld|brd|smn|drg|thf)\b/i;
+export const validXKillPatternTiamat =
+  /x.*?(kill.*?(?:\b[a-z]{3}\b)|(?:\b[a-z]{3}\b).*?kill)/i;
+export const validXKillPattern = /x.*kill/i;
+export const validAltXinPattern = /^x(?:\s(?!(?<!sc)out\b)\w+)?$/i;
+
 export const channelMessagesToWindows = (
   channel: TextChannel & { messages: any[] },
   popWindow?: number
@@ -54,13 +61,6 @@ export const channelMessagesToWindows = (
     channel.name as string
   )?.replace(/\d/g, "") as HNMTypeChannelKeys | null;
   const windowsPerMember: ParsedWindowsPerMember = {};
-
-  const validJobXinPattern =
-    /^x.*?(scout|tod|blm|rdm|whm|rng|sam|nin|mnk|war|bst|drk|pld|brd|smn|drg|thf)\b/i;
-  const validXKillPatternTiamat =
-    /x.*?(kill.*?(?:\b[a-z]{3}\b)|(?:\b[a-z]{3}\b).*?kill)/i;
-  const validXKillPattern = /x.*kill/i;
-  const validAltXinPattern = /^x\s(?!(out|scout)\b)\w+/i;
   switch (channelHNMTypeKey) {
     case "sim":
     case "shi":
@@ -274,9 +274,7 @@ export const channelMessagesToWindows = (
           const validXKill = validXKillPattern.test(messageContent);
 
           const windowNumberForXIn = extractNumberAfterX(messageContent);
-          const firstWindowXIn =
-            messageContent === "x" ||
-            (messageContent.includes("x") && messageContent.includes("scout"));
+          const firstWindowXIn = validAltXinPattern.test(messageContent);
 
           // eg "x" or "x1"
           if (!validXKill && (firstWindowXIn || windowNumberForXIn === 1)) {
@@ -603,4 +601,19 @@ export const extractMHNMPartOfChannelName = (
   const regex = /-(\w{2,3})(?=\d|$)/;
   const match = input.match(regex);
   return (match ? match[1] : null) as HNMTypeChannelKeys; // Return the captured group or null if no match
+};
+
+export const extractDayNumberAfterKing = (s: string): number | null => {
+  const strings = ["ada", "beh", "faf"];
+
+  const regexPattern = `^(?:\\w{3}\\d+-)?(?:${strings.join("|")})(\\d+)`;
+  const regex = new RegExp(regexPattern, "i");
+
+  const match = s.match(regex);
+
+  if (match) {
+    return parseInt(match[1], 10);
+  } else {
+    return null;
+  }
 };

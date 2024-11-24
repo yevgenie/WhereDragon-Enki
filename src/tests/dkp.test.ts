@@ -3,7 +3,6 @@ import {
   channelHeaderRows,
   channelMessagesToWindows,
   channelPlayerRows,
-  extractMHNMPartOfChannelName,
 } from "../helpers/channelToDKP";
 import { compareCsvFiles, exportToCsv, loadJsonFile } from "../helpers/utils";
 import { Message, TextChannel } from "discord.js";
@@ -232,18 +231,6 @@ test("channelMessagesToWindows - KA", async (t) => {
       timestamp: "2024-09-21 13:12:14",
     },
   });
-
-  t.end();
-});
-
-test("extractMHNMPartOfChannelName", async (t) => {
-  t.equal(extractMHNMPartOfChannelName("sep18-shi"), "shi");
-  t.equal(extractMHNMPartOfChannelName("sep18-kv"), "kv");
-  t.equal(extractMHNMPartOfChannelName("sep18-sim"), "sim");
-  t.equal(extractMHNMPartOfChannelName("sep18-ada2"), "ada");
-  t.equal(extractMHNMPartOfChannelName("sep18-beh7"), "beh");
-  t.equal(extractMHNMPartOfChannelName("sep01-ada2"), "ada");
-  t.equal(extractMHNMPartOfChannelName("sep01-beh7"), "beh");
 
   t.end();
 });

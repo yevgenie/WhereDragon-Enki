@@ -1,8 +1,12 @@
 import { google } from "googleapis";
 import path from "path";
-import { extractMHNMPartOfChannelName } from "./helpers/channelToDKP";
+import {
+  extractDayNumberAfterKing,
+  extractMHNMPartOfChannelName,
+} from "./helpers/channelToDKP";
 import {
   HNMTypeChannelKeyToSheetStringMap,
+  KingHNMTypeChannelKeyToSheetStringMap,
   ParsedWindowsPerMember,
 } from "./models";
 import {
@@ -23,8 +27,11 @@ export async function writeToDKPEntrySheetBasic(
   });
 
   const hnmType = extractMHNMPartOfChannelName(channelName);
+  const hnmDay = extractDayNumberAfterKing(channelName);
   const hnmSheetValue = hnmType
-    ? HNMTypeChannelKeyToSheetStringMap[hnmType]
+    ? (hnmDay && hnmDay < 4
+        ? HNMTypeChannelKeyToSheetStringMap
+        : KingHNMTypeChannelKeyToSheetStringMap)[hnmType]
     : "UNKNOWN";
 
   try {

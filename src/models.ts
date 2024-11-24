@@ -30,8 +30,14 @@ export const HNMTypeChannelKeyToSheetStringMap: {
   shi: "Shiki",
   sim: "Sim",
   beh: "Behe",
-  // Aspi ??
-  // Nidhogg??
+};
+
+export const KingHNMTypeChannelKeyToSheetStringMap: {
+  [key: string]: string;
+} = {
+  faf: "Nidhogg",
+  ada: "Aspid",
+  beh: "KB",
 };
 
 export type HNMDetails = {
