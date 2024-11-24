@@ -9,7 +9,7 @@ test("Kings (Behe/Faf/Ada) Channel To DKP - 5 windows, pop msg", async (t) => {
     "test_data/behe_7.json"
   ) as TextChannel & { messages: Message[] };
   const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
-
+  // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Snyaar: {
       windows: 5,
@@ -100,12 +100,12 @@ test("Kings (Behe/Faf/Ada) Channel To DKP - 5 windows, pop msg", async (t) => {
       timestamp: "2024-11-17 06:44:50",
     },
     Leob: {
-      windows: 5,
-      message: "x",
+      windows: 4,
+      message: "x2 (lune)",
+      checkForError: false,
       xClaim: true,
       xKill: true,
-      checkForError: false,
-      timestamp: "2024-11-17 06:46:57",
+      timestamp: "2024-11-17 06:59:57",
     },
     Switchstance: {
       windows: 5,
@@ -272,193 +272,193 @@ test("Kings (Behe/Faf/Ada) Channel To DKP - 5 windows, pop msg", async (t) => {
   t.end();
 });
 
-// test("Nov05 Ada4", async (t) => {
-//   const mockKingsChannel = loadJsonFile(
-//     "test_data/nov05-ada4.json"
-//   ) as TextChannel & { messages: Message[] };
-//   const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+test("Nov05 Ada4", async (t) => {
+  const mockKingsChannel = loadJsonFile(
+    "test_data/nov05-ada4.json"
+  ) as TextChannel & { messages: Message[] };
+  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  await writeToJSONFile(parsedWindowsPerMember);
+  t.deepEqual(parsedWindowsPerMember, {
+    Karianna: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:17:03",
+    },
+    Yeti: {
+      windows: 2,
+      message: "x (ka scout)",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:17:51",
+    },
+    Snyaar: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:18:02",
+    },
+    Arturiel: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:19:17",
+    },
+    Cocopuff: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:19:22",
+    },
+    Foopy: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:19:44",
+    },
+    Brandan: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:20:27",
+    },
+    Morrigan: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:21:12",
+    },
+    Tarnish: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:21:56",
+    },
+    Shei: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:21:59",
+    },
+    Nicolesixtynine: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:22:25",
+    },
+    Rhelk: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:22:38",
+    },
+    Syragon: {
+      windows: 2,
+      message: "enki result post `scout` parse fix",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-22 09:26:15",
+    },
+    Chaosmage: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:24:15",
+    },
+    Naten: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:24:31",
+    },
+    Mayer: {
+      windows: 2,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:25:24",
+    },
+    Riccu: {
+      windows: 2,
+      message: "x-1",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-05 09:25:42",
+    },
+    Tuple: {
+      windows: 1,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-05 09:27:20",
+    },
+    Voidedge: {
+      windows: 1,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-05 09:29:17",
+    },
+    Magnum: {
+      windows: 1,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-05 09:29:36",
+    },
+    Senormiyagi: {
+      windows: 1,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-05 09:29:49",
+    },
+    Sabyrd: {
+      windows: 1,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-05 09:31:00",
+    },
+  });
 
-//   t.deepEqual(parsedWindowsPerMember, {
-//     Karianna: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:17:03",
-//     },
-//     Yeti: {
-//       windows: 2,
-//       message: "x (ka scout)",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:17:51",
-//     },
-//     Snyaar: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:18:02",
-//     },
-//     Arturiel: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:19:17",
-//     },
-//     Cocopuff: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:19:22",
-//     },
-//     Foopy: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:19:44",
-//     },
-//     Brandan: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:20:27",
-//     },
-//     Morrigan: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:21:12",
-//     },
-//     Tarnish: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:21:56",
-//     },
-//     Shei: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:21:59",
-//     },
-//     Nicolesixtynine: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:22:25",
-//     },
-//     Rhelk: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:22:38",
-//     },
-//     Syragon: {
-//       windows: 2,
-//       message: "enki result post `scout` parse fix",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-22 09:26:15",
-//     },
-//     Chaosmage: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:24:15",
-//     },
-//     Naten: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:24:31",
-//     },
-//     Mayer: {
-//       windows: 2,
-//       message: "x",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:25:24",
-//     },
-//     Riccu: {
-//       windows: 2,
-//       message: "x-1",
-//       xClaim: true,
-//       xKill: true,
-//       checkForError: false,
-//       timestamp: "2024-11-05 09:25:42",
-//     },
-//     Tuple: {
-//       windows: 1,
-//       message: "x2",
-//       checkForError: false,
-//       xClaim: true,
-//       xKill: true,
-//       timestamp: "2024-11-05 09:27:20",
-//     },
-//     Voidedge: {
-//       windows: 1,
-//       message: "x2",
-//       checkForError: false,
-//       xClaim: true,
-//       xKill: true,
-//       timestamp: "2024-11-05 09:29:17",
-//     },
-//     Magnum: {
-//       windows: 1,
-//       message: "x2",
-//       checkForError: false,
-//       xClaim: true,
-//       xKill: true,
-//       timestamp: "2024-11-05 09:29:36",
-//     },
-//     Senormiyagi: {
-//       windows: 1,
-//       message: "x2",
-//       checkForError: false,
-//       xClaim: true,
-//       xKill: true,
-//       timestamp: "2024-11-05 09:29:49",
-//     },
-//     Sabyrd: {
-//       windows: 1,
-//       message: "x2",
-//       checkForError: false,
-//       xClaim: true,
-//       xKill: true,
-//       timestamp: "2024-11-05 09:31:00",
-//     },
-//   });
-
-//   t.end();
-// });
+  t.end();
+});
 
 test("Nov06 Ada5", async (t) => {
   const mockKingsChannel = loadJsonFile(
