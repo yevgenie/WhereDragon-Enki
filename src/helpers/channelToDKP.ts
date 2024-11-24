@@ -325,7 +325,9 @@ export const channelMessagesToWindows = (
             windowsPerMember[memberName].xOutWindow = windowIndex;
             windowsPerMember[memberName].xClaim = false; // X-out will always force x-claim to false
             windowsPerMember[memberName].xKill = false; // X-out will always force x-kill to false
-            windowsPerMember[memberName].windows = windowIndex; // index is 0 based, so +1 to adjust to window number. X-out happens after the last window process so +1 to adjust for that.
+            const lateXInDiff =
+              totalWindows - windowsPerMember[memberName].windows;
+            windowsPerMember[memberName].windows = windowIndex - lateXInDiff; // index is 0 based, so +1 to adjust to window number. X-out happens after the last window process so +1 to adjust for that.
             windowsPerMember[memberName].timestamp = formatTimestampToDate(
               message.createdTimestamp
             );
@@ -358,7 +360,8 @@ export const channelMessagesToWindows = (
         // eg "x"  "x forgot" "x-forgot" "x Barrymckonichon"
         if (
           messageContent === "x" ||
-          validFirstXinPattern.test(messageContent) ||
+          (validFirstXinPattern.test(messageContent) &&
+            !messageContent.includes("kill")) ||
           (messageContent.includes("x") && messageContent.includes("forgot")) // todo: do we want an amdin check for forgot like for scouts?
         ) {
           windowsPerMember[memberName] = {
@@ -373,6 +376,13 @@ export const channelMessagesToWindows = (
 
         // eg "x-kill" "xkill" "x kill"
         const validXKill = validXKillPattern.test(messageContent);
+
+        if (validXKill) {
+          console.log({ validXKill, memberName, messageContent });
+        } else if (!validXKill) {
+          console.log({ validXKill, memberName, messageContent });
+        }
+
         if (validXKill) {
           if (windowsPerMember[memberName]) {
             // must have had an "x" prior to the "x-kill"

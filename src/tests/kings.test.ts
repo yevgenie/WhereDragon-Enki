@@ -1293,3 +1293,113 @@ test("Nov14 Beg4 - x-out timing, alt name", async (t) => {
 
   t.end();
 });
+
+test("Nov15 Ada2 - early termination no pop with x2 and x-out member", async (t) => {
+  const mockKingsChannel = loadJsonFile(
+    "test_data/nov15-ada2.json"
+  ) as TextChannel & { messages: Message[] };
+  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  // await writeToJSONFile(parsedWindowsPerMember);
+  t.deepEqual(parsedWindowsPerMember, {
+    Arturiel: {
+      windows: 7,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 17:36:48",
+    },
+    Demonterror: {
+      windows: 7,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 17:37:04",
+    },
+    Cyr: {
+      windows: 7,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 17:40:57",
+    },
+    Cocopuff: {
+      windows: 7,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 17:42:45",
+    },
+    Habiba: {
+      windows: 2,
+      message: "x | x out",
+      xClaim: false,
+      xKill: false,
+      checkForError: false,
+      timestamp: "2024-11-15 18:02:29",
+      xOutWindow: 2,
+    },
+    Waky: {
+      windows: 7,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 17:48:56",
+    },
+    Mathrandir: {
+      windows: 7,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 17:49:21",
+    },
+    Snyaar: {
+      windows: 6,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-15 17:55:57",
+    },
+    Yupitan: {
+      windows: 6,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-15 17:56:09",
+    },
+    Darth: {
+      windows: 6,
+      message: "x2",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-15 17:57:54",
+    },
+    Taisai: {
+      windows: 2,
+      message: "x2 | x-out",
+      checkForError: false,
+      xClaim: false,
+      xKill: false,
+      timestamp: "2024-11-15 18:14:44",
+      xOutWindow: 3,
+    },
+    Thris: {
+      windows: 5,
+      message: "x3",
+      checkForError: false,
+      xClaim: true,
+      xKill: true,
+      timestamp: "2024-11-15 18:10:42",
+    },
+  });
+
+  t.end();
+});
