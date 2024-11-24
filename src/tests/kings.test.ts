@@ -277,7 +277,7 @@ test("Nov05 Ada4", async (t) => {
     "test_data/nov05-ada4.json"
   ) as TextChannel & { messages: Message[] };
   const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
-  await writeToJSONFile(parsedWindowsPerMember);
+  // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Karianna: {
       windows: 2,
@@ -377,11 +377,11 @@ test("Nov05 Ada4", async (t) => {
     },
     Syragon: {
       windows: 2,
-      message: "enki result post `scout` parse fix",
+      message: "x",
       xClaim: true,
       xKill: true,
       checkForError: false,
-      timestamp: "2024-11-22 09:26:15",
+      timestamp: "2024-11-05 09:22:40",
     },
     Chaosmage: {
       windows: 2,

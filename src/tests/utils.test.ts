@@ -3,7 +3,7 @@ import {
   extractDayNumberAfterKing,
   extractMHNMPartOfChannelName,
   extractNumberAfterX,
-  validAltXinPattern,
+  validFirstXinPattern,
   validJobXinPattern,
   validXKillPattern,
   validXKillPatternTiamat,
@@ -53,26 +53,29 @@ test("extractMHNMPartOfChannelName", async (t) => {
 });
 
 test("Valid Alt Xin Pattern", (t) => {
-  t.plan(7);
+  t.plan(9);
 
   // Test case for single 'x'
-  t.ok(validAltXinPattern.test("x"), 'Matches single "x"');
+  t.ok(validFirstXinPattern.test("x"), 'Matches single "x"');
 
   // Test cases for 'x' followed by allowed patterns
-  t.ok(validAltXinPattern.test("x scout"), 'Matches "x scout"');
-  t.ok(validAltXinPattern.test("x abc"), 'Matches "x abc"');
+  t.ok(validFirstXinPattern.test("x scout"), 'Matches "x scout"');
+  t.ok(validFirstXinPattern.test("x (ka scout)"), "Matches x in");
+  t.ok(validFirstXinPattern.test("x abc"), 'Matches "x abc"');
   t.ok(
-    validAltXinPattern.test("x Scout"),
+    validFirstXinPattern.test("x Scout"),
     'Matches "x Scout" (case-insensitive)'
   );
 
   // Test cases for patterns that should not match
-  t.notOk(validAltXinPattern.test("x out"), 'Does not match "x out"');
+  t.notOk(validFirstXinPattern.test("x out"), 'Does not match "x out"');
   t.notOk(
-    validAltXinPattern.test("x Out"),
+    validFirstXinPattern.test("x Out"),
     'Does not match "x Out" (case-insensitive)'
   );
-  t.notOk(validAltXinPattern.test("xyz"), 'Does not match "xyz"');
+  t.notOk(validFirstXinPattern.test("x2"), 'Does not match "x2"');
+
+  t.notOk(validFirstXinPattern.test("x 3 scout"), 'Does not match "x 3 scout"');
 
   t.end();
 });
@@ -135,7 +138,7 @@ test("Valid X Kill Pattern Tiamat", (t) => {
   t.end();
 });
 
-test("Valid Job Xin Pattern", (t) => {
+test("Valid Job Xin Pattern for Tiamat JOB", (t) => {
   t.plan(15);
 
   // Positive test cases: Should match

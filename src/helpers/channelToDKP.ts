@@ -51,7 +51,8 @@ export const validJobXinPattern =
 export const validXKillPatternTiamat =
   /x.*?(kill.*?(?:\b[a-z]{3}\b)|(?:\b[a-z]{3}\b).*?kill)/i;
 export const validXKillPattern = /x.*kill/i;
-export const validAltXinPattern = /^x(?:\s(?!(?<!sc)out\b)\w+)?$/i;
+export const validFirstXinPattern =
+  /^x(?:\s*(?!(?<!sc)out\b)(?![0-9])(\(\w+\s+scout\)|[a-z]+)?)?$/i;
 
 export const channelMessagesToWindows = (
   channel: TextChannel & { messages: any[] },
@@ -274,10 +275,14 @@ export const channelMessagesToWindows = (
           const validXKill = validXKillPattern.test(messageContent);
 
           const windowNumberForXIn = extractNumberAfterX(messageContent);
-          const firstWindowXIn = validAltXinPattern.test(messageContent);
+          const firstWindowXIn = validFirstXinPattern.test(messageContent);
 
           // eg "x" or "x1"
-          if (!validXKill && (firstWindowXIn || windowNumberForXIn === 1)) {
+          if (
+            !validXKill &&
+            (firstWindowXIn ||
+              (windowNumberForXIn === 1 && !windowsPerMember[memberName]))
+          ) {
             windowsPerMember[memberName] = {
               windows: totalWindows - notFirstWindowAdjuster,
               message: messageContent,
@@ -345,7 +350,7 @@ export const channelMessagesToWindows = (
         // eg "x"  "x forgot" "x-forgot" "x Barrymckonichon"
         if (
           messageContent === "x" ||
-          validAltXinPattern.test(messageContent) ||
+          validFirstXinPattern.test(messageContent) ||
           (messageContent.includes("x") && messageContent.includes("forgot")) // todo: do we want an amdin check for forgot like for scouts?
         ) {
           windowsPerMember[memberName] = {
