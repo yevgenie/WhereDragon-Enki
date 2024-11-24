@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tape dist/tests/**/hnm.test.js",
+    "test": "tape dist/tests/**/kings.test.js",
+    "test-utils": "tape dist/tests/**/utils.test.js",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "start": "node dist/index.js",

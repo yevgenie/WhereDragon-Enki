@@ -52,7 +52,7 @@ export const validXKillPatternTiamat =
   /x.*?(kill.*?(?:\b[a-z]{3}\b)|(?:\b[a-z]{3}\b).*?kill)/i;
 export const validXKillPattern = /x.*kill/i;
 export const validFirstXinPattern =
-  /^x(?:\s*(?!(?<!sc)out\b)(?![0-9])(\(\w+\s+scout\)|[a-z]+)?)?$/i;
+  /^x-?(?:\s*(?!(?<!sc)out\b)(?![0-9])(\(\w+\s+scout\)|\w+(?:\s+\w+)*)?)?$/i;
 
 export const channelMessagesToWindows = (
   channel: TextChannel & { messages: any[] },
@@ -259,7 +259,7 @@ export const channelMessagesToWindows = (
         extractWindowNumber(firstWindowMessage) - 1;
 
       windows.forEach((window, windowIndex) => {
-        window.forEach((message: any, windowIndex: number) => {
+        window.forEach((message: any) => {
           const memberName =
             message.memberDisplayName ??
             message.author.globalName ??
@@ -315,10 +315,17 @@ export const channelMessagesToWindows = (
           // eg "x-out" "xout" "x out"
           if (isXOut && windowsPerMember[memberName]) {
             // TODO: Heavy testing here on x-outs. Sigh.
+            // if (memberName === "Koobu") {
+            //   console.log({
+            //     memberName,
+            //     windowIndex,
+            //     w: windowsPerMember[memberName].windows,
+            //   });
+            // }
             windowsPerMember[memberName].xOutWindow = windowIndex;
             windowsPerMember[memberName].xClaim = false; // X-out will always force x-claim to false
             windowsPerMember[memberName].xKill = false; // X-out will always force x-kill to false
-            windowsPerMember[memberName].windows -= windowIndex + 1 + 1; // index is 0 based, so +1 to adjust to window number. X-out happens after the last window process so +1 to adjust for that.
+            windowsPerMember[memberName].windows = windowIndex; // index is 0 based, so +1 to adjust to window number. X-out happens after the last window process so +1 to adjust for that.
             windowsPerMember[memberName].timestamp = formatTimestampToDate(
               message.createdTimestamp
             );
