@@ -29,11 +29,12 @@ export async function writeToDKPEntrySheetBasic(
   const hnmType = extractMHNMPartOfChannelName(channelName);
   const hnmDay = extractDayNumberAfterKing(channelName);
   const hnmSheetValue = hnmType
-    ? (hnmDay && hnmDay < 4
-        ? HNMTypeChannelKeyToSheetStringMap
-        : KingHNMTypeChannelKeyToSheetStringMap)[hnmType]
+    ? (hnmDay && hnmDay > 3
+        ? KingHNMTypeChannelKeyToSheetStringMap
+        : HNMTypeChannelKeyToSheetStringMap)[hnmType]
     : "UNKNOWN";
 
+  console.log("HNM Type:", hnmType, hnmSheetValue);
   try {
     // CLEAR PREVIOUS STEPS - VERY IMPORTANT!
     await WDSheetsAPI.clear("B5:B223");

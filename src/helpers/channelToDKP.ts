@@ -79,7 +79,8 @@ export const channelMessagesToWindows = (
           if (
             messageContent === "x" ||
             (messageContent.includes("x") &&
-              messageContent.includes("scout")) ||
+              (messageContent.includes("scout") ||
+                messageContent.includes("tod"))) ||
             (windowNumberForXIn !== null && windowNumberForXIn > 0)
           ) {
             windowsPerMember[memberName] = {
