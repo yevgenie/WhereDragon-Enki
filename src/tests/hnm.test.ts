@@ -370,3 +370,182 @@ test("Nov14 KV - no window claim, just KO credits", async (t) => {
   });
   t.end();
 });
+
+test("Nov15 KV", async (t) => {
+  const mockKingsChannel = loadJsonFile(
+    "test_data/nov15-kv.json"
+  ) as TextChannel & { messages: Message[] };
+  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  // await writeToJSONFile(parsedWindowsPerMember);
+  t.deepEqual(parsedWindowsPerMember, {
+    Avelain: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:00:12",
+    },
+    Draxzy: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:01:39",
+    },
+    Chaosmage: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:02:08",
+    },
+    Switchstance: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:07:24",
+    },
+    Lilsheck: {
+      windows: 1,
+      message: "x barrymckochinor",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:09:05",
+    },
+    Barbar: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:09:39",
+    },
+    Arturiel: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:15:44",
+    },
+    Whereami: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:23:12",
+    },
+    Mathrandir: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 08:34:11",
+    },
+    Poundski: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:39:28",
+    },
+    Miradin: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:47:12",
+    },
+    Novek: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:50:01",
+    },
+    Waky: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:50:22",
+    },
+    Gow: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:53:16",
+    },
+    Syragon: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:55:11",
+    },
+    Midnigh: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:55:16",
+    },
+    Shei: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:55:18",
+    },
+    Koobu: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:55:36",
+    },
+    Yupitan: {
+      windows: 0,
+      message: "x kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:55:39",
+    },
+    Cocopuff: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:55:45",
+    },
+    Chronus: {
+      windows: 0,
+      message: "x-kill",
+      xKill: true,
+      xClaim: false,
+      checkForError: false,
+      timestamp: "2024-11-15 08:57:14",
+    },
+  });
+  t.end();
+});
