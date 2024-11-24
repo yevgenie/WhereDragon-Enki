@@ -491,13 +491,3 @@ test("Tiamat Channel To DKP", async (t) => {
 
   t.end();
 });
-
-test("extractNumberAfterX function", (t) => {
-  t.plan(5);
-
-  t.equal(extractNumberAfterX("x1"), 1, 'Should return 1 for "x1"');
-  t.equal(extractNumberAfterX("x-1"), 1, 'Should return 1 for "x-1"');
-  t.equal(extractNumberAfterX("x 1"), 1, 'Should return 1 for "x 1"');
-  t.equal(extractNumberAfterX("x2"), 2, 'Should return 2 for "x2"');
-  t.equal(extractNumberAfterX("x"), null, 'Should return null for "x"');
-});

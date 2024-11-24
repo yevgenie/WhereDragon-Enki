@@ -99,7 +99,7 @@ export const generateDKPEntryMemberRowEntries = (
   isClaimed: boolean
 ) => {
   const requests: { range: string; values: string[][] }[] = [];
-  console.log({ windowsPerMember });
+
   Object.keys(windowsPerMember)
     .sort(alphaSort)
     .forEach((name, index) => {

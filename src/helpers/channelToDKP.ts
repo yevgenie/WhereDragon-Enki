@@ -36,11 +36,11 @@ export const extractWindowInfo = (
 };
 
 export const extractNumberAfterX = (s: string): number | null => {
-  const regex = /^x-?\s*(\d+)$/;
+  const regex = /^[xX]\s*(-)?\s*(\d+)/;
   const match = s.match(regex);
 
   if (match) {
-    return parseInt(match[1], 10);
+    return parseInt(match[2], 10);
   } else {
     return null;
   }
@@ -290,7 +290,7 @@ export const channelMessagesToWindows = (
             };
           }
 
-          // eg "x2" "x 3"
+          // eg "x2" "x 3" "X2 darkfarkee"
           if (
             !validXKill &&
             !isXOut &&
@@ -309,7 +309,7 @@ export const channelMessagesToWindows = (
           }
 
           // eg "x-out" "xout" "x out"
-          if (isXOut) {
+          if (isXOut && windowsPerMember[memberName]) {
             // TODO: Heavy testing here on x-outs. Sigh.
             windowsPerMember[memberName].xOutWindow = windowIndex;
             windowsPerMember[memberName].xClaim = false; // X-out will always force x-claim to false
