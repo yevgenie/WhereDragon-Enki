@@ -17,6 +17,7 @@ test("extractNumberAfterX function", (t) => {
   t.equal(extractNumberAfterX("x 1"), 1, 'Should return 1 for "x 1"');
   t.equal(extractNumberAfterX("x2"), 2, 'Should return 2 for "x2"');
   t.equal(extractNumberAfterX("x"), null, 'Should return null for "x"');
+
   t.equal(
     extractNumberAfterX("X2 darkfarkee"),
     2,
@@ -63,6 +64,11 @@ test("Valid Alt Xin Pattern", (t) => {
   t.ok(validFirstXinPattern.test("x (ka scout)"), "Matches x in");
   t.ok(validFirstXinPattern.test("X-KV scout"), "Matches x in");
   t.ok(validFirstXinPattern.test("x abc"), 'Matches "x abc"');
+
+  t.equal(
+    validFirstXinPattern.test("X (forgot to x in at start)"),
+    "Should Match X"
+  );
   t.ok(
     validFirstXinPattern.test("x Scout"),
     'Matches "x Scout" (case-insensitive)'

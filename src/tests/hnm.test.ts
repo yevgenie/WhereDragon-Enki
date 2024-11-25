@@ -549,3 +549,150 @@ test("Nov15 KV", async (t) => {
   });
   t.end();
 });
+
+test("Nov15 KA", async (t) => {
+  const mockKingsChannel = loadJsonFile(
+    "test_data/nov15-ka.json"
+  ) as TextChannel & { messages: Message[] };
+  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  await writeToJSONFile(parsedWindowsPerMember);
+  t.deepEqual(parsedWindowsPerMember, {
+    Nuke: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:17:17",
+    },
+    Etra: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:17:39",
+    },
+    Thris: {
+      windows: 0,
+      xClaim: false,
+      xKill: false,
+      message: "x -> x out",
+      checkForError: false,
+      timestamp: "2024-11-15 19:19:15",
+    },
+    Ancestor: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:19:30",
+    },
+    Waky: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:26:01",
+    },
+    Yupitan: {
+      windows: 1,
+      message: "x ada scout",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:26:37",
+    },
+    Snyaar: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:26:52",
+    },
+    Demonterror: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:26:58",
+    },
+    Cyr: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:28:13",
+    },
+    Brandan: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:29:48",
+    },
+    Dogs: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:34:22",
+    },
+    Dcplee: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:34:39",
+    },
+    Darth: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:34:52",
+    },
+    Mathrandir: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:35:04",
+    },
+    Arturiel: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:36:24",
+    },
+    Morrigan: {
+      windows: 1,
+      message: "x2",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 18:47:45",
+    },
+    Yeti: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-15 19:21:29",
+    },
+  });
+  t.end();
+});

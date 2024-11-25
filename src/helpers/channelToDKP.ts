@@ -115,7 +115,7 @@ export const channelMessagesToWindows = (
             !messageContent.includes("scout")
           ) {
             windowsPerMember[memberName] = {
-              windows: 0,
+              windows: 1,
               xClaim: false,
               xKill: false,
               message: `${
