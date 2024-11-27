@@ -574,7 +574,7 @@ test("Nov15 KA", async (t) => {
       timestamp: "2024-11-15 18:17:39",
     },
     Thris: {
-      windows: 0,
+      windows: 1,
       xClaim: false,
       xKill: false,
       message: "x -> x out",
