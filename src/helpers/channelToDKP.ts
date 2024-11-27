@@ -52,7 +52,7 @@ export const validXKillPatternTiamat =
   /x.*?(kill.*?(?:\b[a-z]{3}\b)|(?:\b[a-z]{3}\b).*?kill)/i;
 export const validXKillPattern = /x.*kill/i;
 export const validFirstXinPattern =
-  /^x-?(?:\s*(?!(?<!sc)out\b)(?![0-9])(\(\w+\s+scout\)|\w+(?:\s+\w+)*)?)?$/i;
+  /^x-?\s*(?:(?!(?<!sc)out\b)(?![0-9])([^(]\S+\s+scout|\w+(?:\s+\w+)*|\([^)]+\))?)?$/i;
 
 export const channelMessagesToWindows = (
   channel: TextChannel & { messages: any[] },
@@ -133,13 +133,18 @@ export const channelMessagesToWindows = (
       const { validWindows, invalidWindows } =
         splitWindowsIntoValidInvalid(channel);
 
-      // invalidWindows.forEach((window) => {
-      //   console.log("INVALID WINDOW CHECK? -->");
-      //   window.forEach((message) => {
-      //     console.log(message.content);
-      //   });
-      //   console.log("// ------------------");
+      // console.log({
+      //   i: JSON.stringify(invalidWindows, null, 2),
+      //   v: validWindows.length,
       // });
+
+      invalidWindows.forEach((window) => {
+        console.log("INVALID WINDOW CHECK? -->");
+        window.forEach((message) => {
+          console.log(message.content);
+        });
+        console.log("// ------------------");
+      });
 
       let windowCheckedInMembers: string[] = [];
       validWindows.forEach((window, windowIndex) => {

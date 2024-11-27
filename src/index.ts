@@ -12,6 +12,7 @@ import * as dotenv from "dotenv";
 import { writeFile } from "fs";
 import { writeToDKPEntrySheetBasic } from "./sheets";
 import { channelMessagesToWindows } from "./helpers/channelToDKP";
+import { watchChatLogsForTods } from "./tod-watcher";
 
 dotenv.config();
 
@@ -171,3 +172,5 @@ function getPopWindowFromProcessCommand(str: string) {
     return undefined;
   }
 }
+
+watchChatLogsForTods();

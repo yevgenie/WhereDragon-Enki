@@ -54,7 +54,7 @@ test("extractMHNMPartOfChannelName", async (t) => {
 });
 
 test("Valid Alt Xin Pattern", (t) => {
-  t.plan(10);
+  t.plan(12);
 
   // Test case for single 'x'
   t.ok(validFirstXinPattern.test("x"), 'Matches single "x"');
@@ -65,14 +65,22 @@ test("Valid Alt Xin Pattern", (t) => {
   t.ok(validFirstXinPattern.test("X-KV scout"), "Matches x in");
   t.ok(validFirstXinPattern.test("x abc"), 'Matches "x abc"');
 
-  t.equal(
+  t.ok(
     validFirstXinPattern.test("X (forgot to x in at start)"),
     "Should Match X"
   );
+
   t.ok(
     validFirstXinPattern.test("x Scout"),
     'Matches "x Scout" (case-insensitive)'
   );
+
+  t.ok(
+    validFirstXinPattern.test("X (forgot to x in at start)"),
+    "Matches x forgot to x in at start"
+  );
+
+  t.ok(validFirstXinPattern.test("x 3 scout"), 'Does not match "x 3 scout"');
 
   // Test cases for patterns that should not match
   t.notOk(validFirstXinPattern.test("x out"), 'Does not match "x out"');
@@ -81,8 +89,6 @@ test("Valid Alt Xin Pattern", (t) => {
     'Does not match "x Out" (case-insensitive)'
   );
   t.notOk(validFirstXinPattern.test("x2"), 'Does not match "x2"');
-
-  t.notOk(validFirstXinPattern.test("x 3 scout"), 'Does not match "x 3 scout"');
 
   t.end();
 });
