@@ -68,6 +68,10 @@ client.on("messageCreate", async (message: any) => {
       ? getPopWindowFromProcessCommand(message.content)
       : undefined;
 
+    const validTiamatWindows = message.content.includes("valid")
+      ? extractValidWindowsFromProcessCommand(message.content)
+      : undefined;
+
     try {
       // Get the channel where the command was sent
       const channel = message.channel as TextChannel;
@@ -106,12 +110,13 @@ client.on("messageCreate", async (message: any) => {
         });
       });
 
-      const windowsPerMember = channelMessagesToWindows(
+      const { windowsPerMember, enkiResponse } = channelMessagesToWindows(
         {
           ...message.channel,
           messages: allMessagesData,
-        } as TextChannel & { messages: Message[] },
-        popWindow
+        } as TextChannel & { messages: Message[]; send: any },
+        popWindow,
+        validTiamatWindows
       );
 
       if (message.content.indexOf("!save") === 0) {
@@ -133,6 +138,7 @@ client.on("messageCreate", async (message: any) => {
             windowsPerMember,
             isClaimed
           );
+          message.channel.send(enkiResponse);
         } else {
           message.channel.send(
             "This command cannot be executed in this type of channel."
@@ -171,6 +177,21 @@ function getPopWindowFromProcessCommand(str: string) {
   } else {
     return undefined;
   }
+}
+
+export function extractValidWindowsFromProcessCommand(
+  str: string
+): number[] | undefined {
+  const regex = /^\s*!process(?:\s+.*)?\s+valid-((?:\d+-)*\d+)\s*$/;
+  const match = str.match(regex);
+
+  if (match && match[1]) {
+    const numbers = match[1].split("-").map(Number);
+    if (numbers.length > 0) {
+      return numbers;
+    }
+  }
+  return undefined;
 }
 
 watchChatLogsForTods();

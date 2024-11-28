@@ -8,7 +8,8 @@ test("Nov13 KA Test", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov13-ka.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Tarnish: {
@@ -172,7 +173,8 @@ test("Nov14 KV - no window claim, just KO credits", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov14-kv.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Tarnish: {
@@ -375,7 +377,8 @@ test("Nov15 KV", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov15-kv.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Avelain: {
@@ -554,8 +557,9 @@ test("Nov15 KA", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov15-ka.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
-  await writeToJSONFile(parsedWindowsPerMember);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
+  // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Nuke: {
       windows: 1,

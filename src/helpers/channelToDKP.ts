@@ -56,12 +56,15 @@ export const validFirstXinPattern =
 
 export const channelMessagesToWindows = (
   channel: TextChannel & { messages: any[] },
-  popWindow?: number
-): ParsedWindowsPerMember => {
+  popWindow?: number,
+  validTiamatWindows?: number[]
+): { windowsPerMember: ParsedWindowsPerMember; enkiResponse: string } => {
   const channelHNMTypeKey = extractMHNMPartOfChannelName(
     channel.name as string
   )?.replace(/\d/g, "") as HNMTypeChannelKeys | null;
   const windowsPerMember: ParsedWindowsPerMember = {};
+  let enkiResponse: string = "Done.";
+
   switch (channelHNMTypeKey) {
     case "sim":
     case "shi":
@@ -128,23 +131,41 @@ export const channelMessagesToWindows = (
         }
       });
 
-      return windowsPerMember;
+      return { windowsPerMember, enkiResponse };
     case "tia":
-      const { validWindows, invalidWindows } =
-        splitWindowsIntoValidInvalid(channel);
+      const { validWindows, invalidWindows } = splitWindowsIntoValidInvalid(
+        channel,
+        validTiamatWindows
+      );
 
-      // console.log({
-      //   i: JSON.stringify(invalidWindows, null, 2),
-      //   v: validWindows.length,
-      // });
-
-      invalidWindows.forEach((window) => {
-        console.log("INVALID WINDOW CHECK? -->");
-        window.forEach((message) => {
-          console.log(message.content);
+      const invalidWindowsWithXIns = invalidWindows.filter((messages) =>
+        messages.some((msg) => {
+          return (
+            msg.memberDisplayName !== "Alise" && msg.content.includes("x-")
+          );
+        })
+      );
+      if (invalidWindowsWithXIns.length > 0) {
+        const invalidWindowNumbers: number[] = [];
+        invalidWindowsWithXIns.forEach((window) => {
+          let windowNumber = 0;
+          window.forEach((msg) => {
+            if (windowNumber > 0) return;
+            windowNumber = extractWindowNumber(msg.content);
+            if (windowNumber > 0) {
+              invalidWindowNumbers.push(windowNumber);
+            }
+          });
         });
-        console.log("// ------------------");
-      });
+
+        enkiResponse = `Found ${invalidWindowsWithXIns.length} invalid window${
+          invalidWindowsWithXIns.length === 1 ? "" : "s"
+        } (#${invalidWindowNumbers.join(
+          ", #"
+        )}). Run the process command with 'valid-${invalidWindowNumbers.join(
+          "-"
+        )}' to process these windows.`;
+      }
 
       let windowCheckedInMembers: string[] = [];
       validWindows.forEach((window, windowIndex) => {
@@ -239,7 +260,7 @@ export const channelMessagesToWindows = (
           }
         });
       });
-      return windowsPerMember;
+      return { windowsPerMember, enkiResponse };
     case "beh":
     case "faf":
     case "ada":
@@ -354,7 +375,7 @@ export const channelMessagesToWindows = (
         });
       });
       // console.log({ windowsPerMember });
-      return windowsPerMember;
+      return { windowsPerMember, enkiResponse };
     case "kv":
       channel.messages.forEach((message) => {
         const memberName =
@@ -406,9 +427,9 @@ export const channelMessagesToWindows = (
         }
       });
 
-      return windowsPerMember;
+      return { windowsPerMember, enkiResponse };
     default:
-      return windowsPerMember;
+      return { windowsPerMember, enkiResponse };
   }
 };
 
@@ -539,15 +560,33 @@ const buildHeaderRowsToDelimitedCSV = (
   return [row1, row2, row3, row4].join("\n");
 };
 const splitWindowsIntoValidInvalid = (
-  channel: TextChannel & { messages: any[] }
+  channel: TextChannel & { messages: any[] },
+  validTiamatWindows?: number[]
 ) => {
   const messagesByWindow = splitMessagesIntoWindows(channel.messages);
-  const validWindows = messagesByWindow.filter((msgs) =>
-    checkIfValidClaimWindowForTiamat(msgs)
-  );
-  const invalidWindows = messagesByWindow.filter(
-    (msgs) => !checkIfValidClaimWindowForTiamat(msgs)
-  );
+
+  const validWindows = messagesByWindow.filter((msgs) => {
+    const windowNumber = extractWindowNumber(msgs[0].content);
+    console.log("windowNumber", windowNumber);
+    return (
+      validTiamatWindows?.includes(windowNumber) ||
+      checkIfValidClaimWindowForTiamat(msgs)
+    );
+  });
+
+  const invalidWindows = messagesByWindow.filter((msgs) => {
+    const windowNumber = extractWindowNumber(msgs[0].content);
+    return (
+      !validTiamatWindows?.includes(windowNumber) &&
+      !checkIfValidClaimWindowForTiamat(msgs)
+    );
+  });
+
+  console.log({
+    validTiamatWindows,
+    i: invalidWindows.length,
+    v: validWindows.length,
+  });
 
   return {
     validWindows,
@@ -567,18 +606,20 @@ const extractWindowNumber = (input: string): number => {
 };
 
 const splitMessagesIntoWindows = (
-  messages: Array<{ content: string }>,
+  messages: Array<{ content: string; memberDisplayName?: string }>,
   isKingsChannel: boolean = false
-): Array<Array<{ content: string }>> => {
+): Array<Array<{ content: string; memberDisplayName?: string }>> => {
   const windowPattern = /--\sWindow\s\d/i;
   // Use reduce to build up our result array
   return messages.reduce(
-    (acc: Array<Array<{ content: string }>>, msg: { content: string }) => {
+    (
+      acc: Array<Array<{ content: string; memberDisplayName?: string }>>,
+      msg: { content: string; memberDisplayName?: string }
+    ) => {
       if (
         msg.content.includes("in 5-Minutes x-in") ||
         (isKingsChannel && windowPattern.test(msg.content.toLocaleLowerCase()))
       ) {
-        // console.log(msg.content.toLocaleLowerCase());
         acc.push([msg]);
       } else {
         if (acc.length === 0) {
@@ -593,7 +634,7 @@ const splitMessagesIntoWindows = (
 };
 
 const checkIfValidClaimWindowForTiamat = (
-  messages: Array<{ content: string }>
+  messages: Array<{ content: string; memberDisplayName?: string }>
 ) => {
   // @Kanryu @Dogs please check / confirm requirements here for Tiamat valid windows
   const tankPattern = /x.*?(pld|nin|drk)/i;

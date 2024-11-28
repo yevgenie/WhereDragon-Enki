@@ -8,6 +8,7 @@ import {
   validXKillPattern,
   validXKillPatternTiamat,
 } from "../helpers/channelToDKP";
+import { extractValidWindowsFromProcessCommand } from "..";
 
 test("extractNumberAfterX function", (t) => {
   t.plan(6);
@@ -174,6 +175,24 @@ test("Valid Job Xin Pattern for Tiamat JOB", (t) => {
   t.notOk(
     validJobXinPattern.test("x Monk"),
     'Matches "x Monk" (case-insensitive)'
+  );
+
+  t.end();
+});
+
+test("extractValidWindowsFromProcessCommand should handle edge cases", (t) => {
+  // Test case with leading/trailing spaces
+  t.deepEqual(
+    extractValidWindowsFromProcessCommand("!process   valid-2-3-4   "),
+    [2, 3, 4],
+    "Should handle leading/trailing spaces"
+  );
+
+  // Test case with hyphenated text before valid-
+  t.deepEqual(
+    extractValidWindowsFromProcessCommand("!process text-with-hyphens valid-2"),
+    [2],
+    "Should handle text with hyphens before valid-"
   );
 
   t.end();

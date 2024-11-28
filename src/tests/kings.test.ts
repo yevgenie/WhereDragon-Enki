@@ -8,7 +8,8 @@ test("Kings (Behe/Faf/Ada) Channel To DKP - 5 windows, pop msg", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/behe_7.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Snyaar: {
@@ -276,7 +277,8 @@ test("Nov05 Ada4", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov05-ada4.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Karianna: {
@@ -464,7 +466,8 @@ test("Nov06 Ada5", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov06-ada5.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Junonrunon: {
@@ -653,7 +656,8 @@ test("Nov12 Beh2 - Alt name (darkfarkee)", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov12-beh2.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Dogs: {
@@ -785,7 +789,8 @@ test("Nov13 Ada7 - Alt name (darkfarkee)", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov13-ada7.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Syragon: {
@@ -1101,7 +1106,8 @@ test("Nov14 Beg4 - x-out timing, alt name", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov14-beh4.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Chaosmage: {
@@ -1298,7 +1304,8 @@ test("Nov15 Ada2 - early termination no pop with x2 and x-out member", async (t)
   const mockKingsChannel = loadJsonFile(
     "test_data/nov15-ada2.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Arturiel: {
@@ -1408,7 +1415,8 @@ test("Nov21 Ada4 - x-out and x-in format", async (t) => {
   const mockKingsChannel = loadJsonFile(
     "test_data/nov21-ada4.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockKingsChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
     Lordgore: {
