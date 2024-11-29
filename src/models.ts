@@ -10,6 +10,9 @@ export type HNMType =
 
 export type HNMTypeChannelKeys =
   | null
+  | "vrtra"
+  | "vrt"
+  | "jorm"
   | "ka"
   | "kv"
   | "faf"
@@ -30,6 +33,9 @@ export const HNMTypeChannelKeyToSheetStringMap: {
   shi: "Shiki",
   sim: "Sim",
   beh: "Behe",
+  vrt: "Vrtra",
+  vrtra: "Vrtra",
+  jorm: "Jorm",
 };
 
 export const KingHNMTypeChannelKeyToSheetStringMap: {

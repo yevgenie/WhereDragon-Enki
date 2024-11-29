@@ -428,6 +428,69 @@ export const channelMessagesToWindows = (
       });
 
       return { windowsPerMember, enkiResponse };
+    case "jorm":
+    case "vrt":
+    case "vrtra":
+      channel.messages.forEach((message) => {
+        const memberName =
+          message.memberDisplayName ??
+          message.author.globalName ??
+          message.author.username;
+        const messageContent = message.content.trim().toLocaleLowerCase();
+        if (!windowsPerMember[memberName]) {
+          // eg "x"
+          // todo: add admin :greencheck: check for scouts
+          if (
+            !messageContent.includes("kill") && // not x-kill
+            messageContent.includes("x")
+          ) {
+            windowsPerMember[memberName] = {
+              windows: 1,
+              message: messageContent,
+              xClaim: true,
+              xKill: true,
+              checkForError: false,
+              timestamp: formatTimestampToDate(message.createdTimestamp),
+            };
+            // eg "x forgot" "x-forgot"
+          }
+        }
+         // x-kill
+        if (
+          messageContent.includes("x-kill")
+        ) {
+          windowsPerMember[memberName] = {
+            windows: 0,
+            message: messageContent,
+            xClaim: false,
+            xKill: true,
+            checkForError: false,
+            timestamp: formatTimestampToDate(message.createdTimestamp),
+          };
+          // eg "x forgot" "x-forgot"
+        }
+        // eg. "x-out"
+        if (windowsPerMember[memberName]) {
+          if (
+            messageContent.includes("x") &&
+            messageContent.includes("out") &&
+            !messageContent.includes("scout")
+          ) {
+            windowsPerMember[memberName] = {
+              windows: 1,
+              xClaim: false,
+              xKill: false,
+              message: `${
+                windowsPerMember[memberName].message
+              } -> ${messageContent.trim()}`,
+              checkForError: false,
+              timestamp: formatTimestampToDate(message.createdTimestamp),
+            };
+          }
+        }
+      }
+
+      return { windowsPerMember, enkiResponse };
     default:
       return { windowsPerMember, enkiResponse };
   }
@@ -664,13 +727,29 @@ const buildPlayerWindowRowsToDelimitedCSV = (attendance: {
   return [headerRow.join("\t"), ...rows].join("\n");
 };
 
-export const extractMHNMPartOfChannelName = (
-  input: string
-): HNMTypeChannelKeys => {
-  const regex = /-(\w{2,3})(?=\d|$)/;
-  const match = input.match(regex);
-  return (match ? match[1] : null) as HNMTypeChannelKeys; // Return the captured group or null if no match
-};
+export function extractMHNMPartOfChannelName(text: string): string {
+  const words = [
+    "vrtra",
+    "vrt",
+    "jorm",
+    "ka",
+    "kv",
+    "faf",
+    "ada",
+    "tia",
+    "shi",
+    "sim",
+    "beh",
+  ];
+
+  for (const word of words) {
+    const searchStr = `-${word}`;
+    if (text.includes(searchStr)) {
+      return word;
+    }
+  }
+  return "";
+}
 
 export const extractDayNumberAfterKing = (s: string): number | null => {
   const strings = ["ada", "beh", "faf"];

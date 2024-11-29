@@ -27,7 +27,7 @@ test("extractNumberAfterX function", (t) => {
 });
 
 test("extractMHNMPartOfChannelName", async (t) => {
-  t.plan(7);
+  t.plan(10);
 
   t.equal(extractMHNMPartOfChannelName("sep18-shi"), "shi");
   t.equal(extractMHNMPartOfChannelName("sep18-kv"), "kv");
@@ -36,6 +36,10 @@ test("extractMHNMPartOfChannelName", async (t) => {
   t.equal(extractMHNMPartOfChannelName("sep18-beh7"), "beh");
   t.equal(extractMHNMPartOfChannelName("sep01-ada2"), "ada");
   t.equal(extractMHNMPartOfChannelName("sep01-beh7"), "beh");
+
+  t.equal(extractMHNMPartOfChannelName("nov28-jorm-cta"), "jorm");
+  t.equal(extractMHNMPartOfChannelName("nov28-vrt"), "vrt");
+  t.equal(extractMHNMPartOfChannelName("nov24-vrtra"), "vrtra");
 
   t.end();
 });

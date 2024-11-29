@@ -6,12 +6,14 @@ import {
 } from "../helpers/channelToDKP";
 import { compareCsvFiles, exportToCsv, loadJsonFile } from "../helpers/utils";
 import { TextChannel, Message } from "discord.js";
+import { writeToJSONFile } from "..";
 
 test("Tiamat Channel To DKP", async (t) => {
   const mockTiamatChannel = loadJsonFile(
     "test_data/tiamat_6.json"
   ) as TextChannel & { messages: Message[] };
-  const parsedWindowsPerMember = channelMessagesToWindows(mockTiamatChannel);
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockTiamatChannel);
   // console.log({ parsedWindowsPerMember });
   t.deepEqual(parsedWindowsPerMember, {
     Dogs: {
@@ -486,6 +488,259 @@ test("Tiamat Channel To DKP", async (t) => {
       xClaim: false,
       xKill: true,
       timestamp: "2024-11-06 23:52:35",
+    },
+  });
+
+  t.end();
+});
+
+test("Jorm CTA Test", async (t) => {
+  const mockTiamatChannel = loadJsonFile(
+    "test_data/nov28-jorm-cta.json"
+  ) as TextChannel & { messages: Message[] };
+  const { windowsPerMember: parsedWindowsPerMember } =
+    channelMessagesToWindows(mockTiamatChannel);
+  // await writeToJSONFile(parsedWindowsPerMember);
+  t.deepEqual(parsedWindowsPerMember, {
+    Nar: {
+      windows: 1,
+      message: "x-job only once in a pt and at top of the mountain",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:17:26",
+    },
+    Naten: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:22:09",
+    },
+    Switchstance: {
+      windows: 1,
+      message: "x - brd",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:29:15",
+    },
+    Karasunosu: {
+      windows: 1,
+      message: "x-thf",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:31:00",
+    },
+    Karianna: {
+      windows: 1,
+      message: "x-whm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:31:05",
+    },
+    Martinii: {
+      windows: 1,
+      message: "x-pld",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:32:44",
+    },
+    Ancestor: {
+      windows: 1,
+      message: "x-blm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:33:09",
+    },
+    Pengo: {
+      windows: 1,
+      message: "x-rdm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:33:42",
+    },
+    Faeyn: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:34:38",
+    },
+    Yeti: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:35:21",
+    },
+    Sebasthegalka: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:35:30",
+    },
+    Tuple: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:36:52",
+    },
+    Morrigan: {
+      windows: 1,
+      message: "x- pld",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:36:59",
+    },
+    Mayer: {
+      windows: 1,
+      message: "x-blm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:38:55",
+    },
+    Foopy: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:40:41",
+    },
+    Leob: {
+      windows: 1,
+      message: "x-whm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:42:36",
+    },
+    Syragon: {
+      windows: 1,
+      message: "x-rdm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:48:49",
+    },
+    Beastieboy: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:51:47",
+    },
+    Annunaki: {
+      windows: 1,
+      message: "x smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:53:30",
+    },
+    Cocopuff: {
+      windows: 1,
+      message: "x-rdm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:57:32",
+    },
+    Brandan: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:59:24",
+    },
+    Annatar: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:59:39",
+    },
+    Magnum: {
+      windows: 1,
+      message: "x-whm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:59:46",
+    },
+    Lordgore: {
+      windows: 1,
+      message: "x-brd",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 16:59:48",
+    },
+    Samuraijake: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:00:14",
+    },
+    Pestii: {
+      windows: 1,
+      message: "x-rdm",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:00:45",
+    },
+    Riccu: {
+      windows: 1,
+      message: "x-smn",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:03:13",
+    },
+    Whereami: {
+      windows: 1,
+      message: "x-brd",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:05:32",
+    },
+    Shei: {
+      windows: 1,
+      message: "x-brd",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:07:25",
+    },
+    Dogs: {
+      windows: 1,
+      message: "x",
+      xClaim: true,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:08:49",
     },
   });
 
