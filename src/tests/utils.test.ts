@@ -3,6 +3,8 @@ import {
   extractDayNumberAfterKing,
   extractMHNMPartOfChannelName,
   extractNumberAfterX,
+  extractXinForMember,
+  extractXOutFor,
   validFirstXinPattern,
   validJobXinPattern,
   validXKillPattern,
@@ -197,6 +199,76 @@ test("extractValidWindowsFromProcessCommand should handle edge cases", (t) => {
     extractValidWindowsFromProcessCommand("!process text-with-hyphens valid-2"),
     [2],
     "Should handle text with hyphens before valid-"
+  );
+
+  t.end();
+});
+
+test("extractXinForMember test", (t) => {
+  // Test case with leading/trailing spaces
+  t.deepEqual(
+    extractXinForMember("x-for-Dapang"),
+    "Dapang",
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXinForMember("x-for- Dapang"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXinForMember("x-for-3123asdf"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXinForMember("x-kill"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXinForMember("x for random stuff"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.end();
+});
+
+test("extractXOutFor test", (t) => {
+  // Test case with leading/trailing spaces
+  t.deepEqual(
+    extractXOutFor("x-out-for-Dapang"),
+    "Dapang",
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXOutFor("x-out- Dapang"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXOutFor("x-out-for-3123asdf"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXOutFor("x-out"),
+    null,
+    "Should handle leading/trailing spaces"
+  );
+
+  t.deepEqual(
+    extractXOutFor("x out for random stuff"),
+    null,
+    "Should handle leading/trailing spaces"
   );
 
   t.end();

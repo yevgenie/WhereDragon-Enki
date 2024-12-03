@@ -742,6 +742,14 @@ test("Jorm CTA Test", async (t) => {
       checkForError: false,
       timestamp: "2024-11-28 17:08:49",
     },
+    Samseny: {
+      windows: 0,
+      message: "x-kill",
+      xClaim: false,
+      xKill: true,
+      checkForError: false,
+      timestamp: "2024-11-28 17:15:14",
+    },
   });
 
   t.end();

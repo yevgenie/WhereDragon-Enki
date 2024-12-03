@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tape dist/tests/**/tiamat.test.js",
+    "test": "tape dist/tests/**/kings.test.js",
     "test-utils": "tape dist/tests/**/utils.test.js",
     "test-hnm": "tape dist/tests/**/hnm.test.js",
     "build": "tsc",

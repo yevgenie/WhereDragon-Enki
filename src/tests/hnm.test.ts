@@ -561,29 +561,21 @@ test("Nov15 KA", async (t) => {
     channelMessagesToWindows(mockKingsChannel);
   // await writeToJSONFile(parsedWindowsPerMember);
   t.deepEqual(parsedWindowsPerMember, {
-    Nuke: {
+    dapang: {
       windows: 1,
-      message: "x",
+      message: "x-for-dapang",
       xClaim: true,
       xKill: true,
       checkForError: false,
       timestamp: "2024-11-15 18:17:17",
     },
-    Etra: {
+    super: {
       windows: 1,
-      message: "x",
+      message: "x-for-super",
       xClaim: true,
       xKill: true,
       checkForError: false,
-      timestamp: "2024-11-15 18:17:39",
-    },
-    Thris: {
-      windows: 1,
-      xClaim: false,
-      xKill: false,
-      message: "x -> x out",
-      checkForError: false,
-      timestamp: "2024-11-15 19:19:15",
+      timestamp: "2024-11-15 18:19:26",
     },
     Ancestor: {
       windows: 1,

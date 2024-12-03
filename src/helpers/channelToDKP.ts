@@ -70,16 +70,29 @@ export const channelMessagesToWindows = (
     case "shi":
     case "ka":
       channel.messages.forEach((message) => {
-        const memberName =
+        let memberName =
           message.memberDisplayName ??
           message.author.globalName ??
           message.author.username;
         const messageContent = message.content.trim().toLocaleLowerCase();
+
+        const xInFor = extractXinForMember(messageContent);
+        const xOutFor = extractXOutFor(messageContent);
+
+        if (xInFor !== null) {
+          memberName = xInFor;
+        }
+
+        if (xOutFor !== null) {
+          memberName = xOutFor;
+        }
+
         if (!windowsPerMember[memberName]) {
           const windowNumberForXIn = extractNumberAfterX(messageContent);
           // eg "x"
           // todo: add admin :greencheck: check for scouts
           if (
+            xInFor ||
             messageContent === "x" ||
             (messageContent.includes("x") &&
               (messageContent.includes("scout") ||
@@ -111,7 +124,7 @@ export const channelMessagesToWindows = (
         }
 
         // eg. "x-out"
-        if (windowsPerMember[memberName]) {
+        if (xOutFor || windowsPerMember[memberName]) {
           if (
             messageContent.includes("x") &&
             messageContent.includes("out") &&
@@ -286,13 +299,23 @@ export const channelMessagesToWindows = (
 
       windows.forEach((window, windowIndex) => {
         window.forEach((message: any) => {
-          const memberName =
+          let memberName =
             message.memberDisplayName ??
             message.author.globalName ??
             message.author.username;
           if (memberName === "Alise") return;
 
           const messageContent = message.content.trim().toLocaleLowerCase();
+          const xInFor = extractXinForMember(messageContent);
+          const xOutFor = extractXOutFor(messageContent);
+
+          if (xInFor !== null) {
+            memberName = xInFor;
+          }
+
+          if (xOutFor !== null) {
+            memberName = xOutFor;
+          }
 
           const isXOut =
             messageContent.includes("x") &&
@@ -308,6 +331,7 @@ export const channelMessagesToWindows = (
           if (
             !validXKill &&
             (firstWindowXIn ||
+              xInFor ||
               (windowNumberForXIn === 1 && !windowsPerMember[memberName]))
           ) {
             windowsPerMember[memberName] = {
@@ -339,7 +363,7 @@ export const channelMessagesToWindows = (
           }
 
           // eg "x-out" "xout" "x out"
-          if (isXOut && windowsPerMember[memberName]) {
+          if ((isXOut || xOutFor) && windowsPerMember[memberName]) {
             // TODO: Heavy testing here on x-outs. Sigh.
             // if (memberName === "Koobu") {
             //   console.log({
@@ -432,17 +456,29 @@ export const channelMessagesToWindows = (
     case "vrt":
     case "vrtra":
       channel.messages.forEach((message) => {
-        const memberName =
+        let memberName =
           message.memberDisplayName ??
           message.author.globalName ??
           message.author.username;
         const messageContent = message.content.trim().toLocaleLowerCase();
+
+        const xInFor = extractXinForMember(messageContent);
+        const xOutFor = extractXOutFor(messageContent);
+
+        if (xInFor !== null) {
+          memberName = xInFor;
+        }
+
+        if (xOutFor !== null) {
+          memberName = xOutFor;
+        }
+
         if (!windowsPerMember[memberName]) {
           // eg "x"
           // todo: add admin :greencheck: check for scouts
           if (
             !messageContent.includes("kill") && // not x-kill
-            messageContent.includes("x")
+            (messageContent.includes("x") || xInFor) // x or x-for
           ) {
             windowsPerMember[memberName] = {
               windows: 1,
@@ -455,10 +491,8 @@ export const channelMessagesToWindows = (
             // eg "x forgot" "x-forgot"
           }
         }
-         // x-kill
-        if (
-          messageContent.includes("x-kill")
-        ) {
+        // x-kill
+        if (messageContent.includes("x-kill")) {
           windowsPerMember[memberName] = {
             windows: 0,
             message: messageContent,
@@ -472,9 +506,10 @@ export const channelMessagesToWindows = (
         // eg. "x-out"
         if (windowsPerMember[memberName]) {
           if (
-            messageContent.includes("x") &&
-            messageContent.includes("out") &&
-            !messageContent.includes("scout")
+            (messageContent.includes("x") &&
+              messageContent.includes("out") &&
+              !messageContent.includes("scout")) ||
+            xOutFor
           ) {
             windowsPerMember[memberName] = {
               windows: 1,
@@ -488,8 +523,7 @@ export const channelMessagesToWindows = (
             };
           }
         }
-      }
-
+      });
       return { windowsPerMember, enkiResponse };
     default:
       return { windowsPerMember, enkiResponse };
@@ -764,4 +798,28 @@ export const extractDayNumberAfterKing = (s: string): number | null => {
   } else {
     return null;
   }
+};
+
+export const extractXinForMember = (input: string): string | null => {
+  const regex = /x-for-([a-z]+)/i;
+
+  const match = regex.exec(input);
+
+  if (match && match[1]) {
+    return match[1];
+  }
+
+  return null;
+};
+
+export const extractXOutFor = (input: string): string | null => {
+  const regex = /x-out-for-([a-z]+)/i;
+
+  const match = regex.exec(input);
+
+  if (match && match[1]) {
+    return match[1];
+  }
+
+  return null;
 };
