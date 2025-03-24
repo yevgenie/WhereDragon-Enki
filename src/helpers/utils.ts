@@ -89,3 +89,38 @@ export function formatTimestampToDate(timestamp: number) {
   // Formatting to "YYYY-MM-DD HH:mm:ss"
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
+export function parseDiscordTimestamp(discordTimestamp: string): Date | null {
+  // Regular expression to match Discord timestamp format and capture the Unix timestamp
+  const timestampRegex = /<t:(\d+):[TRdDfFt]>/;
+
+  // Extract the Unix timestamp from the string
+  const match = discordTimestamp.match(timestampRegex);
+  if (!match || !match[1]) {
+    return null; // Return null if the format doesn't match or no timestamp is found
+  }
+
+  // Convert the captured Unix timestamp (in seconds) to a number
+  const unixSeconds = parseInt(match[1], 10);
+
+  // Unix timestamps in Discord are in seconds, but JavaScript Date expects milliseconds
+  const milliseconds = unixSeconds * 1000;
+
+  // Create and return a Date object
+  return new Date(milliseconds);
+}
+
+export function getWindowNumber(startTime: Date, now: Date): number {
+  const diffMs = now.getTime() - startTime.getTime(); // Difference in milliseconds
+  const diffMinutes = Math.floor(diffMs / (1000 * 60)); // Convert to minutes
+  return Math.floor(diffMinutes / 10) + 1; // Window number (starts at 1)
+}
+
+export function getNextTenMinuteInterval(startTime: Date, now: Date): Date {
+  const msPerTenMinutes = 10 * 60 * 1000; // 10 minutes in milliseconds
+  const timeSinceStartMs = now.getTime() - startTime.getTime();
+  const intervalsSinceStart = Math.ceil(timeSinceStartMs / msPerTenMinutes);
+  const nextIntervalMs =
+    startTime.getTime() + intervalsSinceStart * msPerTenMinutes;
+  return new Date(nextIntervalMs);
+}
