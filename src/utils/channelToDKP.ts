@@ -1,5 +1,4 @@
-import { Message, TextChannel } from "discord.js";
-import { formatTimestampToDate } from "./utils";
+import { TextChannel } from "discord.js";
 import { ParsedWindowsPerMember, HNMTypeChannelKeys } from "../models";
 import { MessageWithDisplayName } from "../types/MessageData";
 import { getDateDataFromUnixTimeStamp } from "./timeUtils";
@@ -129,7 +128,7 @@ export const channelMessagesToWindows = (
                     }
 
                     // eg. "x-out"
-                    if (xOutFor || windowsPerMember[memberName]) {
+                    if (xOutFor && windowsPerMember[memberName]) {
                         if (
                             messageContent.includes("x") &&
                             messageContent.includes("out") &&

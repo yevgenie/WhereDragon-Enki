@@ -2,3 +2,5 @@ dist
 node_modules
 .env
 credentials.json
+test_output.json
+test_output.txt
