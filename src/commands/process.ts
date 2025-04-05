@@ -35,7 +35,7 @@ export const execute = async (message: Message) => {
                 windowsPerMember,
                 isClaimed
             );
-            message.channel.send(enkiResponse);
+            await message.channel.send(enkiResponse);
         } else {
             // WARN: This is likely not good practice since we will delete commands
             // but maybe we can delete commands after run time. A better option 
@@ -46,7 +46,7 @@ export const execute = async (message: Message) => {
     } catch (error) {
         if (message.channel instanceof TextChannel) {
             console.error("Error fetching messages:", error);
-            message.channel.send("Error fetching messages.");
+            await message.channel.send("Error fetching messages.");
         }
     }
 }

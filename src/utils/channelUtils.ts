@@ -39,6 +39,8 @@ export async function scheduleWindowMessages(channelId: string, client: ClientWi
     console.log({ delayMs, firstRunTime, startTime, now });
 
     // Function to run the task and schedule subsequent runs
+    // FIXME: This channel.send must be awaited however this chron job isnt 
+    // top level in this module so this needs to be changed.
     const runTask = () => {
         const task = cron.schedule(
             "0 */10 * * * *", // Every 10 minutes on the minute (e.g., 14:00, 14:10)
@@ -149,7 +151,7 @@ export async function getMessageData(channel: TextChannel): Promise<MessageWithD
     return allMessagesData;
 }
 
-export function sendNextCamp(message: Message): void {
+export async function sendNextCamp(message: Message): Promise<void> {
     const client: ClientWithCommands = message.client
 
     if (client.lastPopChannel) {
@@ -159,7 +161,7 @@ export function sendNextCamp(message: Message): void {
         const messageLink = `https://discord.com/channels/${guildId}/${channelId}/${messageId}`;
 
         if (client.lastPopChannel instanceof TextChannel) {
-            client.lastPopChannel.send(`Here's the link to the next POP: ${messageLink}`);
+            await client.lastPopChannel.send(`Here's the link to the next POP: ${messageLink}`);
         }
     }
 
