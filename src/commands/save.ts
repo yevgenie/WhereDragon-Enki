@@ -16,5 +16,5 @@ export const execute = async (message: Message) => {
         },
         channel.name + ".json"
     );
-    if (message.channel instanceof TextChannel) { message.channel.send("Saved."); }
+    if (message.channel instanceof TextChannel) { await message.channel.send("Saved."); }
 }
