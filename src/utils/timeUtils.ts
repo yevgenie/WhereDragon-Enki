@@ -1,59 +1,46 @@
-//const { tzOffset } = require("../config.json");
+import { DateData, HnmTimerData } from "../types/HnmTimerData";
+import { botTZ } from "../config.json";
 
-export function parseTime(hnm: string, timeStamp: string): string | null {
-    let unixTimestamp: string | null;
+export function parseTime(hnmTimerData: HnmTimerData): string | null {
+    // TODO: Cause an error if it remains as null
+    let unixTimestamp: string | null = null;
 
-    if (timeStamp.length == 6) {
-        unixTimestamp = formatTime(timeStamp);
-    } else if (timeStamp.length == 15) {
-        unixTimestamp = formatDateTime(timeStamp);
-    } else {
-        // TODO: Use this to throw an error and tell the sender to correct the date
-        unixTimestamp = null;
+    if (hnmTimerData.timeStamp != null) {
+        // TODO: Implement getting hnmOffset time based on the HNM.
+        const hnmOffset = 21; // WARN: this is a positional offset 22hr == position 21
+
+        if (hnmTimerData.timeStamp?.length == 6) {
+            const dateData = new Date(getDateDataFromTime(hnmTimerData.timeStamp));
+            dateData.setUTCHours(dateData.getUTCHours() + hnmOffset);
+
+            const formatedTimestamp: Date = new Date(
+                dateData.getUTCFullYear(),
+                dateData.getUTCMonth(),
+                dateData.getUTCDate(),
+                dateData.getUTCHours(),
+                dateData.getUTCMinutes(),
+                dateData.getUTCSeconds(),
+            )
+
+            unixTimestamp = getUnixTimeStampFromDateData(formatedTimestamp);
+        } else if (hnmTimerData.timeStamp?.length == 15) {
+            const dateData = new Date(getDateDataFromDateTime(hnmTimerData.timeStamp));
+            dateData.setUTCHours(dateData.getUTCHours() + hnmOffset);
+
+            const formatedTimestamp: Date = new Date(
+                dateData.getUTCFullYear(),
+                dateData.getUTCMonth(),
+                dateData.getUTCDate(),
+                dateData.getUTCHours(),
+                dateData.getUTCMinutes(),
+                dateData.getUTCSeconds(),
+            )
+
+            unixTimestamp = getUnixTimeStampFromDateData(formatedTimestamp);
+        }
     }
+
     return unixTimestamp;
-}
-
-export function formatTime(timeStamp: string): string {
-    const dateData = new Date(getDateDataFromTime(timeStamp));
-
-    // TODO: Implement getting hnmOffset time based on the HNM.
-    const hnmOffset = 21; // WARN: this is a positional offset 22hr == position 21
-
-    dateData.setUTCHours(dateData.getUTCHours() + hnmOffset);
-
-    return Date.UTC(
-        dateData.getUTCFullYear(),
-        dateData.getUTCMonth(),
-        dateData.getUTCDate(),
-        dateData.getUTCHours(),
-        dateData.getUTCMinutes(),
-        dateData.getUTCSeconds(),
-    )
-        .toString()
-        .slice(0, -3);
-}
-
-// FIXME: Why are both format function the same? Just add an if
-// statement?
-export function formatDateTime(timeStamp: string): string {
-    const dateData = new Date(getDateDataFromDateTime(timeStamp));
-
-    // TODO: Implement getting hnmOffset time based on the HNM.
-    const hnmOffset = 21; // WARN: this is a positional offset 22hr == position 21
-
-    dateData.setUTCHours(dateData.getUTCHours() + hnmOffset);
-
-    return Date.UTC(
-        dateData.getUTCFullYear(),
-        dateData.getUTCMonth(),
-        dateData.getUTCDate(),
-        dateData.getUTCHours(),
-        dateData.getUTCMinutes(),
-        dateData.getUTCSeconds(),
-    )
-        .toString()
-        .slice(0, -3);
 }
 
 export function getDateDataFromTime(timeStamp: string): Date {
@@ -72,10 +59,9 @@ export function getDateDataFromTime(timeStamp: string): Date {
             minute,
             second,
         ),
-    );
+    )
 
-    return offsetDateTimeUTC // FIXME: Just used to clear error needs work
-    //return offsetDateTimeUTC(offsetDateTimeUTC)
+    return offsetDateTimeUTC
 }
 
 export function getDateDataFromDateTime(timeStamp: string): Date {
@@ -87,13 +73,75 @@ export function getDateDataFromDateTime(timeStamp: string): Date {
     const second = parseInt(timeStamp.slice(13, 15))
 
     const offsetDateTimeUTC = new Date(
-        Date.UTC(year, month - 1, dayOfMonth, hour, minute, second),
+        Date.UTC(year, month, dayOfMonth, hour, minute, second),
     );
-    console.log("kk");
-    printDateTime(offsetDateTimeUTC);
+    // printDateTime(offsetDateTimeUTC);
 
-    return offsetDateTimeUTC // FIXME: Just used to clear an error
-    //return getOffsetDateTimeUTC(offsetDateTimeUTC)
+    return offsetDateTimeUTC
+}
+
+
+function getUnixTimeStampFromDateData(timeStamp: Date): string {
+    const unixDateTime: string = Date.UTC(
+        timeStamp.getUTCFullYear(),
+        timeStamp.getUTCMonth(),
+        timeStamp.getUTCDate(),
+        timeStamp.getUTCHours(),
+        timeStamp.getUTCMinutes(),
+        timeStamp.getUTCSeconds(),
+    ).toString().slice(0, -3);
+
+    const tzOffset: number = getUTCOffset(parseInt(unixDateTime));
+
+    let year = timeStamp.getUTCFullYear();
+    let month = timeStamp.getUTCMonth();
+    let dayOfMonth = timeStamp.getUTCDate();
+    let hours = timeStamp.getUTCHours();
+    const minutes = timeStamp.getUTCMinutes();
+    const seconds = timeStamp.getUTCSeconds();
+
+    if (hours + tzOffset >= 24) {
+        dayOfMonth++;
+        hours = (hours + tzOffset) % 24;
+
+        const daysInMonth = new Date(year, month + 1, 0).getUTCDate();
+        if (dayOfMonth > daysInMonth) {
+            dayOfMonth = 1;
+            month++;
+
+            if (month > 12) {
+                month = 1;
+                year++;
+            }
+        }
+    } else if (hours + tzOffset < 0) {
+        dayOfMonth--;
+        hours = 24 + (hours + tzOffset);
+
+        if (dayOfMonth < 1) {
+            month--;
+            if (month < 1) {
+                month = 12;
+                year--;
+            }
+            dayOfMonth = new Date(year, month, 0).getUTCDate();
+        }
+    } else {
+        hours += tzOffset;
+    }
+
+    const formatedTimestamp: string = Date.UTC(
+        year,
+        month,
+        dayOfMonth,
+        hours,
+        minutes,
+        seconds
+    )
+        .toString()
+        .slice(0, -3);
+
+    return formatedTimestamp;
 }
 
 export function getDateDataFromUnixTimeStamp(timeStamp: number): string {
@@ -143,47 +191,7 @@ export function getDateDataFromUnixTimeStamp(timeStamp: number): string {
     return formattedDate;
 }
 
-//export function getOffsetDateTimeUTC(offsetDateTimeUTC: Date): number {
-//    const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
-//        timeZone: "America/New_York",
-//        hourCycle: "h23",
-//        hour: "numeric",
-//        minute: "numeric",
-//        second: "numeric",
-//    });
-//
-//    const tzOffset = dateTimeFormat
-//        .formatToParts(offsetDateTimeUTC)
-//        .reduce((offset, part) => {
-//            if (part.type === "timeZoneName") {
-//                return part.value.includes("PDT") ? 7 : 8;
-//            }
-//            return offset;
-//        }, 8);
-//
-//    //if (offsetDateTimeUTC.getUTCHours() - tzOffset < 0) {
-//    //    offsetDateTimeUTC.setUTCDate(offsetDateTimeUTC.getUTCDate() - 1);
-//    //}
-//    //offsetDateTimeUTC.setUTCHours(offsetDateTimeUTC.getUTCHours() - tzOffset);
-//
-//    return tzOffset;
-//    //return offsetDateTimeUTC;
-//}
-
-//export function getUTCOffset(timeZone: string): number {
-//    const now = new Date();
-//
-//    // Format date in the target time zone
-//    const match = now.toLocaleString("en-US", { timeZone, timeZoneName: "longOffset" })
-//        .match(/GMT([+-]\d+):?(\d+)?/);
-//
-//    if (!match) return 0; // If no offset found, assume UTC (0)
-//
-//    const [_, hours, minutes] = match.map(Number); // Convert extracted values to numbers
-//    return (hours || 0) + (minutes || 0) / 60; // Compute decimal offset
-//}
-
-export function printDateTime(dateTime: Date): void {
+function printDateTime(dateTime: Date): void {
     console.log(
         dateTime.getUTCFullYear(),
         dateTime.getUTCMonth(),
@@ -194,7 +202,7 @@ export function printDateTime(dateTime: Date): void {
     );
 }
 
-export function getUTCOffset(timestamp: number, timeZone: string = "America/New_York"): number {
+function getUTCOffset(timestamp: number, timeZone: string = botTZ): number {
     const date = new Date(timestamp);
     const formatter = new Intl.DateTimeFormat("en-US", {
         timeZone,
@@ -212,3 +220,39 @@ export function getUTCOffset(timestamp: number, timeZone: string = "America/New_
     return (hours || 0) + (minutes || 0) / 60;
 }
 
+export function parseOffset(dateData: DateData): DateData {
+    const { tzOffset } = dateData;
+    let { year, month, dayOfMonth, hours } = dateData;
+
+    if (hours + tzOffset >= 24) {
+        dayOfMonth++;
+        hours = (hours + tzOffset) % 24;
+
+        const daysInMonth = new Date(year, month + 1, 0).getUTCDate();
+        if (dayOfMonth > daysInMonth) {
+            dayOfMonth = 1;
+            month++;
+
+            if (month > 12) {
+                month = 1;
+                year++;
+            }
+        }
+    } else if (hours + tzOffset < 0) {
+        dayOfMonth--;
+        hours = 24 + (hours + tzOffset);
+
+        if (dayOfMonth < 1) {
+            month--;
+            if (month < 1) {
+                month = 12;
+                year--;
+            }
+            dayOfMonth = new Date(year, month, 0).getUTCDate();
+        }
+    } else {
+        hours += tzOffset;
+    }
+
+    return dateData;
+}

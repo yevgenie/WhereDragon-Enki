@@ -1,0 +1,44 @@
+{
+    "clientId": "1108651410284888064",
+    "guildId": "876434275661135982",
+    "botTZ": "America/Los_Angeles",
+    "chAutoTimers": "1110052586561744896",
+    "mods": {
+        "n": {
+            "Fafnir": ":dragon_face: (****):",
+            "Adamantoise": ":turtle: (****):",
+            "Behemoth": ":zap: (****):",
+            "King Arthro": ":crab::",
+            "King Vinegarroon": ":scorpion::",
+            "Bloodsucker": ":drop_of_blood::",
+            "Shikigami Weapon": ":japanese_ogre::",
+            "Simurgh": ":bird::",
+            "Jormungand": ":ice_cube::chicken::ice_cube::",
+            "Tiamat": ":fire::chicken::fire::",
+            "Vrtra": ":skull::chicken::skull::"
+        },
+        "a": {
+            "Fafnir": ":grey_question::dragon_face::grey_question: (****):",
+            "Adamantoise": ":grey_question::turtle::grey_question: (****):",
+            "Behemoth": ":grey_question::zap::grey_question: (****):",
+            "King Arthro": ":grey_question::crab::grey_question::",
+            "King Vinegarroon": ":grey_question::scorpion::grey_question::",
+            "Bloodsucker": ":grey_question::drop_of_blood::grey_question::",
+            "Shikigami Weapon": ":grey_question::japanese_ogre::grey_question::",
+            "Simurgh": ":grey_question::bird::grey_question::",
+            "Jormungand": ":grey_question::ice_cube::chicken::ice_cube::grey_question::",
+            "Tiamat": ":grey_question::fire::chicken::fire::grey_question::",
+            "Vrtra": ":grey_question::skull::chicken::skull::grey_question::"
+        },
+        "d": {
+            "Fafnir": ":moneybag::dragon_face::moneybag: (****):",
+            "Adamantoise": ":moneybag::turtle::moneybag: (****):",
+            "Behemoth": ":moneybag::zap::moneybag: (****):"
+        },
+        "t": {
+            "Fafnir": ":gem::dragon_face::gem: (****):",
+            "Adamantoise": ":gem::turtle::gem: (****):",
+            "Behemoth": ":gem::zap::gem: (****):"
+        }
+    }
+}

@@ -2,7 +2,11 @@ import { Channel, Collection, Message, TextChannel } from "discord.js";
 import { getNextTenMinuteInterval, getWindowNumber, parseDiscordTimestamp } from "../utils/utils"
 import * as cron from "node-cron";
 import { ClientWithCommands } from "../types/ClientWithCommands";
-import { MessageData, MessageWithDisplayName } from "../types/MessageData";
+import { MessageWithDisplayName } from "../types/MessageData";
+import { FormatedHnmTimer, HnmTimerData } from "../types/HnmTimerData";
+import { parseTime } from "./timeUtils";
+import { chAutoTimers } from "../config.json";
+import { mods } from "../types/Mod";
 
 export function getLastPopChannel(): Channel | null { return null; }
 
@@ -149,7 +153,7 @@ export async function getMessageData(channel: TextChannel): Promise<MessageWithD
     return allMessagesData;
 }
 
-export function sendNextCamp(message: Message): void {
+export async function sendNextCamp(message: Message): Promise<void> {
     const client: ClientWithCommands = message.client
 
     if (client.lastPopChannel) {
@@ -159,9 +163,93 @@ export function sendNextCamp(message: Message): void {
         const messageLink = `https://discord.com/channels/${guildId}/${channelId}/${messageId}`;
 
         if (client.lastPopChannel instanceof TextChannel) {
-            client.lastPopChannel.send(`Here's the link to the next POP: ${messageLink}`);
+            await client.lastPopChannel.send(`Here's the link to the next POP: ${messageLink}`);
         }
     }
 
     client.lastPopChannel = message.channel;
 }
+
+
+// Alise functionality
+export async function getChannelName(client: ClientWithCommands, channelId: string): Promise<string | null> {
+    try {
+        const channel = await client.channels.fetch(channelId);
+        if (channel instanceof TextChannel) {
+            const channelName: string = channel.name;
+            return channelName;
+        }
+    } catch (error) {
+        console.error(`[ERROR] Failed to fetch channel ${channelId}:`, error);
+    }
+    return null;
+}
+
+export async function processHNM(message: Message, hnmTimerData: HnmTimerData) {
+    const client: ClientWithCommands = message.client;
+    const channel = await client.channels.fetch(chAutoTimers);
+    hnmTimerData.day++;
+
+    const hnmTimer: string = formatTimer(hnmTimerData);
+
+    if (channel instanceof TextChannel && hnmTimerData.isValid) {
+        await removeTimer(channel, hnmTimerData.name);
+        await addTimer(channel, hnmTimer);
+    }
+
+    if (!hnmTimerData.isValid && hnmTimerData.reason) {
+        message.reply(hnmTimerData.reason);
+        console.log(`[HNM     ] ${hnmTimerData.reason}`);
+    }
+}
+
+function formatTimer(hnmTimerData: HnmTimerData) {
+    const utcTimeStamp = parseTime(hnmTimerData);
+    const formatedHnmTimer: FormatedHnmTimer = {
+        name: hnmTimerData.name,
+        hqName: "",
+        emoji: hnmTimerData.hnmData.timerFormat,
+        mod: mods[hnmTimerData.mod],
+        formatedTimer: ""
+    }
+
+    // TODO: Implement mods and emoji formating.
+    // Convert this to a custom type: FormatedTimer
+    if (hnmTimerData.hnmData.isKing && hnmTimerData.day <= 4) {
+        // 1-4 Kings
+        formatedHnmTimer.formatedTimer = `- ${formatedHnmTimer.name} ` +
+            `${formatedHnmTimer.mod}${formatedHnmTimer.emoji}${formatedHnmTimer.mod}` +
+            ` (**${hnmTimerData.day}**) ` + `: <t:${utcTimeStamp}:T> <t:${utcTimeStamp}:R>`
+    } else if (hnmTimerData.hnmData.isKing && hnmTimerData.day >= 4) {
+        // 5+ Kings HQ
+        if (typeof hnmTimerData.hnmData.hq == "string") {
+            formatedHnmTimer.hqName = hnmTimerData.hnmData.hq;
+        }
+        formatedHnmTimer.formatedTimer = `- ${formatedHnmTimer.name}/${formatedHnmTimer.hqName} ` +
+            `${formatedHnmTimer.mod}${formatedHnmTimer.emoji}${formatedHnmTimer.mod}` +
+            ` (**${hnmTimerData.day}**) ` + `: <t:${utcTimeStamp}:T> <t:${utcTimeStamp}:R>`
+    } else {
+        // All other hnm's
+        formatedHnmTimer.formatedTimer = `- ${formatedHnmTimer.name} ` +
+            `${formatedHnmTimer.mod}${formatedHnmTimer.emoji}${formatedHnmTimer.mod}` +
+            `: <t:${utcTimeStamp}:T> <t:${utcTimeStamp}:R>`
+    }
+
+    return formatedHnmTimer.formatedTimer;
+}
+
+async function removeTimer(channel: TextChannel, hnmName: string) {
+    const messages = await channel.messages.fetch();
+
+    if (messages) {
+        messages.forEach((message) => {
+            if (message.content.startsWith(`- ${hnmName}`)) {
+                message.delete();
+            }
+        });
+    }
+}
+async function addTimer(channel: TextChannel, hnmTimer: string) {
+    await channel.send(hnmTimer);
+}
+
