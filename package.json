@@ -9,6 +9,7 @@
     "test-hnm": "tape dist/tests/**/hnm.test.js",
     "test-kings": "tape dist/tests/**/kings.test.js",
     "test-tiamat": "tape dist/tests/**/tiamat.test.js",
+    "test-toau": "tape dist/tests/**/toau.test.js",
     "build": "rimraf dist && tsc && npm run copy-assets",
     "copy-assets": "cp -r src/assets dist/assets",
     "build:watch": "tsc --watch",

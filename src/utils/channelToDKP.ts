@@ -135,7 +135,8 @@ export const validFirstXAltPattern =
 export const channelMessagesToWindows = (
     channel: TextChannel & { messages: MessageWithDisplayName[] },
     popWindow?: number,
-    validTiamatWindows?: number[]
+    validTiamatWindows?: number[],
+    validTOAUWindows?: number[]
 ): { windowsPerMember: ParsedWindowsPerMember; enkiResponse: string } => {
     const channelHNMTypeKey = extractMHNMPartOfChannelName(
         channel.name as string
@@ -463,6 +464,175 @@ export const channelMessagesToWindows = (
 
             return { windowsPerMember, enkiResponse };
         }
+        case "cer":
+        case "hyd":
+        case "khi": {
+            const { validWindows, invalidWindows } = splitTOAUWindowsIntoValidInvalid(
+                channel,
+                validTOAUWindows
+            );
+
+            const invalidWindowsWithXIns = invalidWindows.filter((messages) =>
+                messages.some((msg) => {
+                    return (
+                        msg.memberDisplayName !== "Alise" && msg.content.includes("x-")
+                    );
+                })
+            );
+            if (invalidWindowsWithXIns.length > 0) {
+                const invalidWindowNumbers: number[] = [];
+                invalidWindowsWithXIns.forEach((window) => {
+                    let windowNumber = 0;
+                    window.forEach((msg) => {
+                        if (windowNumber > 0) return;
+                        windowNumber = extractWindowNumber(msg.content);
+                        if (windowNumber > 0) {
+                            invalidWindowNumbers.push(windowNumber);
+                        }
+                    });
+                });
+
+                enkiResponse = `Found ${invalidWindowsWithXIns.length} invalid window${invalidWindowsWithXIns.length === 1 ? "" : "s"
+                    } (#${invalidWindowNumbers.join(
+                        ", #"
+                    )}). Run the process command with 'valid-${invalidWindowNumbers.join(
+                        "-"
+                    )}' to process these windows.`;
+            }
+
+            let windowCheckedInMembers: string[] = [];
+            validWindows.forEach((window, windowIndex) => {
+                let windowTimedOutForXIns = false;
+                let popMsgTimestamp = 0;
+                windowCheckedInMembers = [];
+                // FIXME: Find the type.
+                window.forEach((message: any) => {
+                    const memberName =
+                        message.memberDisplayName ??
+                        message.author.globalName ??
+                        message.author.username;
+
+                    const messageContent = message.content.trim().toLocaleLowerCase();
+
+                    const isLastWindow = windowIndex + 1 === validWindows.length;
+
+                    if (memberName === "Alise") {
+                        // BOT MSG
+                        if (messageContent.includes("closed no more x-in")) {
+                            windowTimedOutForXIns = true;
+                        }
+
+                        if (!windowTimedOutForXIns && messageContent.includes("pop")) {
+                            popMsgTimestamp =
+                                new Date(message.createdTimestamp).getTime() + 60000; // add 60 seconds to POP msg if executed before no more x-in
+                        }
+
+                        return;
+                    }
+
+                    if (windowCheckedInMembers.includes(memberName)) {
+                        return;
+                    }
+
+                    if (windowTimedOutForXIns && !isLastWindow) {
+                        return;
+                    }
+
+                    // console.log({
+                    //   memberName,
+                    //   windowIndex,
+                    //   validJobXinPattern: validJobXinPattern.test(messageContent),
+                    //   validJobXAltinPattern: validJobXAltinPattern.test(messageContent),
+                    // });
+
+                    if ( // x-job
+                        !windowTimedOutForXIns &&
+                        (!popMsgTimestamp ||
+                            new Date(message.createdTimestamp).getTime() < popMsgTimestamp) &&
+                        validJobXinPattern.test(messageContent)
+                    ) {
+                        if (!windowsPerMember[memberName]) {
+                            if (messageContent.includes("alt")) {
+                                windowsPerMember[memberName] = {
+                                    windows: 0.5,
+                                    message: messageContent,
+                                    checkForError: false,
+                                    xClaim: isLastWindow, // is checked for claimed flag Tiamat at final step to get credit
+                                    xKill: isLastWindow,
+                                    timestamp: getDateDataFromUnixTimeStamp(
+                                        message.createdTimestamp
+                                    ).toString(),
+                                };
+                            } else {
+                                windowsPerMember[memberName] = {
+                                    windows: 1,
+                                    message: messageContent,
+                                    checkForError: false,
+                                    xClaim: isLastWindow, // is checked for claimed flag Tiamat at final step to get credit
+                                    xKill: isLastWindow,
+                                    timestamp: getDateDataFromUnixTimeStamp(
+                                        message.createdTimestamp
+                                    ).toString(),
+                                };
+                            }
+                        } else {
+                            if (messageContent.includes("alt")) {
+                                windowCheckedInMembers.push(memberName);
+                                windowsPerMember[memberName].windows += 0.5;
+                                windowsPerMember[memberName].xClaim = isLastWindow;
+                                windowsPerMember[memberName].xKill = isLastWindow;
+                                windowsPerMember[
+                                    memberName
+                                ].message = `${windowsPerMember[memberName].message} | ${messageContent}`;
+                                windowsPerMember[memberName].timestamp =
+                                    getDateDataFromUnixTimeStamp(message.createdTimestamp);
+                            } else {
+                                windowCheckedInMembers.push(memberName);
+                                windowsPerMember[memberName].windows += 1;
+                                windowsPerMember[memberName].xClaim = isLastWindow;
+                                windowsPerMember[memberName].xKill = isLastWindow;
+                                windowsPerMember[
+                                    memberName
+                                ].message = `${windowsPerMember[memberName].message} | ${messageContent}`;
+                                windowsPerMember[memberName].timestamp =
+                                    getDateDataFromUnixTimeStamp(message.createdTimestamp);
+                            }
+                        }
+                    } else if (
+                        (validXKillPatternTiamat.test(messageContent) ||
+                            validXAltKillPatternTiamat.test(messageContent) ||
+                            validJobXinPattern.test(messageContent)) && // allow for x-job and x-alt-job to be treated like x-kill in case they x-'ed in past the 60sec cut off
+                        isLastWindow
+                    ) {
+                        // Can x-kill after windowTimedOutForXIns and isLastWindow
+                        if (!windowsPerMember[memberName]) {
+                            windowsPerMember[memberName] = {
+                                windows: 0,
+                                message: messageContent,
+                                checkForError: false,
+                                xClaim: false,
+                                xKill: true,
+                                timestamp: getDateDataFromUnixTimeStamp(
+                                    message.createdTimestamp
+                                ).toString(),
+                            };
+                        } else {
+                            windowCheckedInMembers.push(memberName);
+                            windowsPerMember[memberName].xClaim = false;
+                            windowsPerMember[memberName].xKill = true;
+                            windowsPerMember[
+                                memberName
+                            ].message = `${windowsPerMember[memberName].message} | ${messageContent}`;
+                            windowsPerMember[memberName].timestamp =
+                                getDateDataFromUnixTimeStamp(message.createdTimestamp);
+                        }
+                    }
+                });
+            });
+
+            return { windowsPerMember, enkiResponse };
+        }
+
         case "beh":
         case "faf":
         case "ada": {
@@ -1091,6 +1261,41 @@ const splitWindowsIntoValidInvalid = (
     };
 };
 
+const splitTOAUWindowsIntoValidInvalid = (
+    channel: TextChannel & { messages: MessageWithDisplayName[] },
+    validTOAUWindows?: number[]
+) => {
+    const messagesByWindow = splitMessagesIntoWindows(channel.messages);
+
+    const validWindows = messagesByWindow.filter((msgs) => {
+        const windowNumber = extractWindowNumber(msgs[0].content);
+        console.log("windowNumber", windowNumber);
+        return (
+            validTOAUWindows?.includes(windowNumber) ||
+            checkIfValidClaimWindowForTOAU(msgs)
+        );
+    });
+
+    const invalidWindows = messagesByWindow.filter((msgs) => {
+        const windowNumber = extractWindowNumber(msgs[0].content);
+        return (
+            !validTOAUWindows?.includes(windowNumber) &&
+            !checkIfValidClaimWindowForTOAU(msgs)
+        );
+    });
+
+    console.log({
+        validTOAUWindows,
+        i: invalidWindows.length,
+        v: validWindows.length,
+    });
+
+    return {
+        validWindows,
+        invalidWindows,
+    };
+};
+
 const extractWindowNumber = (input: string): number => {
     const regex = /-*window\s(\d+)-*/i;
     const match = input.match(regex);
@@ -1162,6 +1367,29 @@ const checkIfValidClaimWindowForTiamat = (
     // });
 
     return hasTank && hasWHM && hasBRD && (hasSixPlus || hasSleeper);
+};
+
+const checkIfValidClaimWindowForTOAU = (
+    messages: Array<{ content: string; memberDisplayName?: string }>
+) => {
+    const tankPattern = /x.*?(pld|nin|drk)/i;
+    const whmPattern = /x.*?(whm)/i;
+    const brdPattern = /x.*?(brd)/i;
+    const rdmPattern = /x.*?(rdm)/i;
+
+    const hasTank = messages.some((msg) => tankPattern.test(msg.content));
+    const hasWHM = messages.some((msg) => whmPattern.test(msg.content));
+    const hasBRD = messages.some((msg) => brdPattern.test(msg.content));
+    const hasRDM = messages.some((msg) => rdmPattern.test(msg.content));
+
+    // console.log({
+    //   hasTank: hasTank,
+    //   hasWHM: hasWHM,
+    //   hasBRD: hasBRD,
+    //   hasRDM: hasRDM,
+    // });
+
+    return hasTank && hasWHM && hasBRD && hasRDM;
 };
 
 const buildPlayerWindowRowsToDelimitedCSV = (attendance: {

@@ -21,6 +21,10 @@ export const execute = async (message: Message) => {
     ? extractValidWindowsFromProcessCommand(message.content)
     : undefined;
 
+  const validTOAUWindows = message.content.includes("valid")
+    ? extractValidWindowsFromProcessCommand(message.content)
+    : undefined;
+
   // 1139789274556923967 -- kv-signup
   // 1308632687896039485 -- jorm-signup
   // 1308632520379863060 -- vrtra-signup
@@ -44,7 +48,8 @@ export const execute = async (message: Message) => {
         messages: allMessagesData,
       } as TextChannel & { messages: Message[] },
       popWindow,
-      validTiamatWindows
+      validTiamatWindows,
+      validTOAUWindows
     );
 
     if (message.channel instanceof TextChannel) {
